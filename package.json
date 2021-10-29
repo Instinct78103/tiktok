@@ -7,9 +7,7 @@
   "private": true,
   "scripts": {
     "test": "echo \"No test specified\" && exit 0",
-    "build": "quasar build",
-    "start": "node server.js",
-    "heroku-postbuild": "yarn && yarn build"
+    "build": "quasar build"
   },
   "dependencies": {
     "@quasar/cli": "^1.2.2",
