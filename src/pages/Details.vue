@@ -1,34 +1,36 @@
 <template>
-  <q-page class="flex column">
+  <q-page class="flex row page-details">
 
-    <q-avatar top center class="flex-block column q-my-sm">
+    <q-avatar top center class="flex-block column q-mt-lg">
       <img :src="authorData.avatar">
     </q-avatar>
 
-    <q-item-section top center class="column" style="align-items: center; flex: unset">
+    <q-item-section top center class="column" style="align-items: center; flex: unset; justify-content: center">
       <h2 class="text-h3 q-my-sm text-center">{{ authorData.name }}</h2>
       <img :src="authorData.video" style="width: 100%; object-fit: contain; height: fit-content">
     </q-item-section>
 
 
     <q-list bordered right class="full-width">
-      <q-item v-for="(item, key) in details" :key="key" class="q-my-sm" clickable v-ripple center style="justify-content: center">
-        <q-item-section>
+      <q-item v-for="(item, key) in details" :key="key" class="q-my-sm" clickable v-ripple center
+              style="justify-content: center"
+      >
+        <q-item-section class="row social">
           <q-item-label><span class="material-icons">visibility</span></q-item-label>
           <q-item-label caption lines="1">{{ details[0].views }}</q-item-label>
         </q-item-section>
 
-        <q-item-section>
+        <q-item-section class="row social">
           <q-item-label><span class="material-icons">thumb_up</span></q-item-label>
           <q-item-label caption lines="1">{{ details[0].likes }}</q-item-label>
         </q-item-section>
 
-        <q-item-section>
+        <q-item-section class="row social">
           <q-item-label><span class="material-icons">share</span></q-item-label>
           <q-item-label caption lines="1">{{ details[0].shares }}</q-item-label>
         </q-item-section>
 
-        <q-item-section center>
+        <q-item-section class="row social">
           <span class="material-icons">question_answer</span>
           <q-item-label caption lines="1">{{ details[0].comments }}</q-item-label>
         </q-item-section>
@@ -70,3 +72,20 @@ export default defineComponent({
   },
 });
 </script>
+
+<style lang="scss">
+.page-details {
+  justify-content: center;
+  min-height: unset !important;
+}
+
+.social {
+  align-items: center;
+  justify-content: center;
+  flex-direction: row;
+
+  .material-icons{
+    margin-right: 10px;
+  }
+}
+</style>
