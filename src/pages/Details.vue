@@ -57,10 +57,16 @@ export default defineComponent({
   methods: {
     async fetchDetails() {
       if (this.$route.params.id) {
-        const p = await fetch(
-          `https://6172d1dd110a740017222e38.mockapi.io/api/v1/users/${this.authorId}/stats`,
-        );
-        this.details = await p.json();
+
+        const index = this.$store.getters['authors/get_authors'].findIndex(author => author.id === this.$route.params.id);
+        const isAuthorInTheStore = index > -1;
+
+        if (!isAuthorInTheStore) {
+          const p = await fetch(
+            `https://6172d1dd110a740017222e38.mockapi.io/api/v1/users/${this.authorId}`,
+          );
+          this.details = await p.json();
+        }
       }
     },
   },
@@ -84,7 +90,7 @@ export default defineComponent({
   justify-content: center;
   flex-direction: row;
 
-  .material-icons{
+  .material-icons {
     margin-right: 10px;
   }
 }

@@ -1,5 +1,6 @@
 export default function () {
   return {
-    authors: []
+    authors: [],
+    page: 1
   }
 }
