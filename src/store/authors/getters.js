@@ -5,3 +5,7 @@ export function get_authors(state) {
 export function get_currentPage(state) {
   return state.page;
 }
+
+export function get_details(state) {
+  return state.details;
+}

@@ -5,3 +5,7 @@ export function set_authors(state, payload) {
 export function set_nextPage(state, payload) {
   state.page = payload;
 }
+
+export function set_authorDetails(state, payload) {
+  state.details = payload;
+}

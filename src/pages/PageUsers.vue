@@ -1,15 +1,38 @@
 <template>
   <q-page class="flex" style="min-height: inherit">
-    <div class="q-pa-md full-width">
-      <div class="q-gutter-md" style="max-width: 300px">
-        <q-input outlined v-model="search" label="Find Author"/>
-      </div>
+    <div class="q-gutter-md q-pa-md items-center flex" style="margin: 0 auto; max-width: 300px">
+      <q-input outlined v-model="search" label="Find Author By Name" style="width: 100%"/>
+      <q-btn style="width: 100%" color="primary" label="Filter By...">
+        <q-menu fit
+          transition-show="flip-right"
+          transition-hide="flip-left"
+        >
+          <q-list dense style="min-width: 100px">
+            <q-item clickable v-close-popup>
+              <q-item-section>Views</q-item-section>
+            </q-item>
+            <q-item clickable v-close-popup>
+              <q-item-section>Likes</q-item-section>
+            </q-item>
+            <q-item clickable v-close-popup>
+              <q-item-section>Shares</q-item-section>
+            </q-item>
+            <q-item clickable v-close-popup>
+              <q-item-section>Followers</q-item-section>
+            </q-item>
+            <q-separator/>
+            <q-item clickable v-close-popup>
+              <q-item-section>Close</q-item-section>
+            </q-item>
+          </q-list>
+        </q-menu>
+      </q-btn>
     </div>
     <q-list class="full-width" bordered separator>
       <q-item
         class="element"
         v-for="author in searching"
-        :key="author.id"
+        :key="author.name"
         clickable
         v-ripple
         :to="{name: 'AuthorDetails', params: {id: author.id}}"
@@ -20,7 +43,6 @@
             <img :src="author.video"/>
           </q-avatar>
         </q-item>
-
 
         <q-item class="author-text">
           <q-item-label class="author-name-container">
@@ -71,6 +93,8 @@
 
 <script>
 
+import {parseISOString} from 'src/service';
+
 export default {
   data() {
     return {
@@ -110,7 +134,6 @@ export default {
 .element {
   display: grid;
   margin: 0 auto;
-  //max-width: calc(100% - 20px);
   width: 100%;
   padding: 0 10px 30px;
   align-items: center;
@@ -154,6 +177,7 @@ export default {
     .social-item {
       align-items: center;
       margin-right: 30px;
+      margin-top: 0;
 
       &:last-child {
         margin-right: 0;
@@ -179,7 +203,7 @@ export default {
   &-name-container {
     display: flex;
     flex-flow: column;
-    align-items: start;
+    align-items: flex-start;
 
     .author-name {
       font-weight: 600;
