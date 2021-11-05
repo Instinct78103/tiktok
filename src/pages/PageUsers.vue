@@ -2,24 +2,23 @@
   <q-page class="flex" style="min-height: inherit">
     <div class="q-gutter-md q-pa-md items-center flex" style="margin: 0 auto; max-width: 300px">
       <q-input outlined v-model="search" label="Find Author By Name" style="width: 100%"/>
-      <q-btn style="width: 100%" color="primary" label="Sort By...">
-        <q-menu fit
-                transition-show="flip-right"
-                transition-hide="flip-left"
-        >
-          <q-list dense style="min-width: 100px">
-            <q-item clickable v-close-popup>
-              <q-item-section>Views</q-item-section>
-            </q-item>
-            <q-item clickable v-close-popup>
-              <q-item-section>Likes</q-item-section>
-            </q-item>
-            <q-item clickable v-close-popup>
-              <q-item-section>Shares</q-item-section>
-            </q-item>
-          </q-list>
-        </q-menu>
-      </q-btn>
+      <q-btn-dropdown color="primary" :label="`Sort By ${sortBy}`"
+                      transition-show="flip-right"
+                      transition-hide="flip-left">
+        <q-list dense style="min-width: 100px">
+          <q-item clickable v-close-popup @click.prevent="sort">
+            <q-item-section data-filter="views">Views</q-item-section>
+          </q-item>
+          <q-item clickable v-close-popup @click.prevent="sort">
+            <q-item-section data-filter="likes">Likes</q-item-section>
+          </q-item>
+          <q-item clickable v-close-popup @click.prevent="sort">
+            <q-item-section data-filter="shares">Shares</q-item-section>
+          </q-item>
+        </q-list>
+      </q-btn-dropdown>
+      <q-icon class="fas fa-sort-amount-up" v-if="sortBy && sortDirection === 'asc'"></q-icon>
+      <q-icon class="fas fa-sort-amount-down" v-if="sortBy && sortDirection === 'desc'"></q-icon>
     </div>
     <q-list class="full-width" bordered separator>
       <q-item
@@ -91,18 +90,22 @@ export default {
   data() {
     return {
       search: '',
+      sortBy: '',
+      sortDirection: 'asc',
     };
   },
   methods: {
-    findAuthorByName(e) {
-      this.search = e.target.value;
-      console.log(e.target.value);
-    },
     parseISOString(s) {
       const dt = s.split(/[: T-]/).map(parseFloat);
       return `${(dt[3] < 10 ? '0' + dt[3] : dt[3]) || 0}:${(dt[4] < 10 ? '0' + dt[4] : dt[4]) || 0}`;
       // return `${dt[0]}-${dt[1]}-${(dt[2] < 10 ? '0' + dt[2] : dt[2]) || 0}, ${(dt[3] < 10 ? '0' + dt[3] : dt[3]) || 0}:${(dt[4] < 10 ? '0' + dt[4] : dt[4]) || 0}`;
       // return `${(dt[3] < 10 ? '0' + dt[3] : dt[3]) || 0}:${(dt[4] < 10 ? '0' + dt[4] : dt[4]) || 0}`;
+    },
+    sort(e) {
+      if (e.target.dataset.filter === this.sortBy) {
+        this.sortDirection = this.sortDirection === 'asc' ? 'desc' : 'asc';
+      }
+      this.sortBy = e.target.dataset.filter;
     },
   },
   created() {
@@ -113,8 +116,14 @@ export default {
       return this.$store.getters['authors/get_authors'];
     },
     searching() {
-      if (this.search) {
-        return this.getAuthors.filter(item => item.name.toLowerCase().includes(this.search.toLowerCase()));
+      if (this.sort) {
+        return this.getAuthors
+          .filter(item => item.name.toLowerCase().includes(this.search.toLowerCase()))
+          .sort((a, b) => {
+            if (a[this.sortBy] === b[this.sortBy]) return 0;
+            if (a[this.sortBy] > b[this.sortBy]) return (this.sortDirection === 'asc') ? 1 : -1;
+            if (a[this.sortBy] < b[this.sortBy]) return (this.sortDirection === 'asc') ? -1 : 1;
+          });
       } else {
         return this.getAuthors;
       }
@@ -124,8 +133,12 @@ export default {
 </script>
 <style lang="scss">
 
-.q-item{
+.q-item {
   min-height: unset;
+}
+
+.q-icon {
+  font-size: 16px;
 }
 
 .element {
