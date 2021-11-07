@@ -17,7 +17,7 @@
           </q-item>
         </q-list>
       </q-btn-dropdown>
-      <q-icon class="fas fa-sort-amount-up" v-if="sortBy && sortDirection === 'asc'"></q-icon>
+      <q-icon class="fas fa-sort-amount-down-alt" v-if="sortBy && sortDirection === 'asc'"></q-icon>
       <q-icon class="fas fa-sort-amount-down" v-if="sortBy && sortDirection === 'desc'"></q-icon>
     </div>
     <q-list class="full-width" bordered separator>
