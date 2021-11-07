@@ -149,7 +149,7 @@ export default {
   padding: 10px;
   align-items: center;
   justify-items: flex-end;
-  grid-gap: 10px 20px;
+  grid-gap: 10px;
   grid-auto-columns: 120px auto;
   grid-auto-rows: fit-content(100%);
   grid-template-areas:
@@ -229,7 +229,7 @@ export default {
       }
 
       .social-icon {
-        margin-right: 10px;
+        margin-right: 5px;
       }
     }
 
