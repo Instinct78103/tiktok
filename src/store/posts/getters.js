@@ -1,5 +1,5 @@
-export function get_authors(state) {
-  return state.authors;
+export function get_posts(state) {
+  return state.posts;
 }
 
 export function get_currentPage(state) {

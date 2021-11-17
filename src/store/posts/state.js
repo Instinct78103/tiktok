@@ -1,6 +1,6 @@
 export default function () {
   return {
-    authors: [],
+    posts: [],
     page: 1,
     details: null,
   };

@@ -67,25 +67,25 @@ export default defineComponent({
   methods: {
     async fetchDetails() {
       if (this.$route.params.id) {
-        const index = this.$store.getters['authors/get_authors'].findIndex(author => author.id === this.$route.params.id);
-        const isAuthorInTheStore = index > -1;
+        const index = this.$store.getters['posts/get_posts'].findIndex(post => post.id === this.$route.params.id);
+        const isPostInTheStore = index > -1;
 
-        if (!isAuthorInTheStore) {
+        if (!isPostInTheStore) {
           const p = await fetch(
             `https://6172d1dd110a740017222e38.mockapi.io/api/v1/users/${this.$route.params.id}`,
           );
           this.details = await p.json();
         } else {
-          this.details = this.$store.getters['authors/get_authors']
-            .find(author => author.id === this.$route.params.id);
+          this.details = this.$store.getters['posts/get_posts']
+            .find(post => post.id === this.$route.params.id);
         }
       }
     },
   },
   computed: {
-    authorData() {
-      return this.$store.getters['authors/get_authors']
-        .find(author => author.id === this.$route.params.id);
+    postData() {
+      return this.$store.getters['posts/get_posts']
+        .find(post => post.id === this.$route.params.id);
     },
     parsedDate() {
       return parseISOString(this.details.created);

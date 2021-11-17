@@ -5,16 +5,16 @@ const routes = [
     children: [
       {
         path: '',
-        name: 'PageUsers',
+        name: 'Videos',
         alias: '/videos',
         props: true,
-        component: () => import( /* webpackChunkName: "AuthorsList" */ 'pages/PageUsers.vue'),
+        component: () => import( /* webpackChunkName: "Videos" */ 'pages/Videos.vue'),
       },
       {
-        path: '/author/:id',
-        name: 'AuthorDetails',
+        path: '/video/:id',
+        name: 'VideoDetails',
         props: true,
-        component: () => import(/* webpackChunkName: "AuthorDetails" */ 'pages/Details.vue'),
+        component: () => import(/* webpackChunkName: "VideoDetails" */ 'pages/Details.vue'),
       },
       {
         path: '/auth',
