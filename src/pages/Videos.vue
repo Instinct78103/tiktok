@@ -1,103 +1,153 @@
 <template>
-  <q-page class="flex" style="min-height: inherit">
-    <div
-      class="q-gutter-md q-pa-md items-center flex"
-      style="margin: 0 auto; max-width: 300px"
-    >
-      <q-input outlined v-model="search" label="Search" style="width: 100%" />
-      <q-btn-dropdown
-        color="primary"
-        :label="`Sort By ${sortBy}`"
-        transition-show="flip-right"
-        transition-hide="flip-left"
-      >
-        <q-list dense style="min-width: 100px">
-          <q-item clickable v-close-popup @click.prevent="sort">
-            <q-item-section data-filter="views">Views</q-item-section>
-          </q-item>
-          <q-item clickable v-close-popup @click.prevent="sort">
-            <q-item-section data-filter="likes">Likes</q-item-section>
-          </q-item>
-          <q-item clickable v-close-popup @click.prevent="sort">
-            <q-item-section data-filter="shares">Shares</q-item-section>
-          </q-item>
-        </q-list>
-      </q-btn-dropdown>
-      <q-icon
-        class="fas fa-sort-amount-down-alt"
-        v-if="sortBy && sortDirection === 'asc'"
-      ></q-icon>
-      <q-icon
-        class="fas fa-sort-amount-down"
-        v-if="sortBy && sortDirection === 'desc'"
-      ></q-icon>
-    </div>
-    
-    <q-list class="full-width" bordered separator>
-      <q-item
-        class="element"
-        v-for="post in searching"
-        :key="post.name"
-        v-ripple
-        :to="{ name: 'VideoDetails', params: { id: post.id } }"
-      >
-        <q-avatar square size="100px" class="post-video">
-          <img :src="post.video" />
-        </q-avatar>
+  <q-page>
 
-        <q-item class="post-status">
-          <q-item-label class="text-left full-width q-pl-s">
-            ❞{{ post.status }}❞
-          </q-item-label>
-        </q-item>
+    <div class="filter">
+      <div class="container">
+        <form @submit.prevent class="form_search">
+          <input type="text" placeholder="Search"/>
+          <q-btn color="primary" class="no-border-radius icon-search">
+            <q-icon class="fas fa-search"></q-icon>
+          </q-btn>
+          <q-btn class="no-border-radius icon-bookmark">
+            <q-icon class="fas fa-bookmark"></q-icon>
+          </q-btn>
+        </form>
 
-        <q-item class="post-icons flex">
-          <q-icon class="fab fa-tiktok"></q-icon>
-          <q-icon class="fas fa-download q-mx-md"></q-icon>
-          <q-icon class="fas fa-play"></q-icon>
-        </q-item>
-
-        <q-item class="post-date">
-          <p class="text-caption text-weight-light">
-            Video Added: {{ Math.floor(Math.random() * 6 + 1) }}h ago,
-            {{ parseISOString(post.created) }}
-          </p>
-        </q-item>
-
-        <q-item flex class="post-avatar-name">
-          <q-avatar size="30px" class="q-mr-sm">
-            <img :src="post.avatar" :alt="post.name" />
-          </q-avatar>
-          <q-item-label class="post-name-container">
-            <span class="post-name flex">{{ post.name }}</span>
-          </q-item-label>
-        </q-item>
-
-        <div class="post-social">
-          <q-item-label class="flex social-item">
-            <q-icon class="social-icon" name="far fa-play-circle"></q-icon>
-            <p>{{ post.views }}</p>
-          </q-item-label>
-
-          <q-item-label class="flex social-item q-mx-md">
-            <q-icon class="social-icon" name="far fa-heart"></q-icon>
-            <p>{{ post.likes }}</p>
-          </q-item-label>
-
-          <q-item-label class="flex social-item">
-            <q-icon class="social-icon" name="far fa-share-square"></q-icon>
-            <p>{{ post.shares }}</p>
-          </q-item-label>
+        <div class="select_div">
+          <div class="icon-arrows q-mr-xs"></div>
+          <select id="sortBy">
+            <option value="views">By Views</option>
+            <option value="likes">By Likes</option>
+            <option value="shares">By Shares</option>
+          </select>
+          <i class="q-icon fas fa-sort-amount-down q-ml-sm" v-if="sortBy && sortDirection === 'desc'"></i>
+          <i class="q-icon fas fa-sort-amount-down-alt q-ml-sm" v-if="sortBy && sortDirection === 'asc'"></i>
         </div>
-      </q-item>
-    </q-list>
+
+        <div class="button-filter">
+          <div class="icon-filter q-mr-xs"></div>
+          <span>Filters</span>
+        </div>
+
+
+      </div>
+
+    </div>
+
+    <!--    <div class="q-gutter-md q-pa-md items-center flex filter">-->
+
+
+    <!--      <q-form class="flex justify-center full-width" style="width: 100%">-->
+    <!--        <q-input-->
+    <!--          bg-color="white"-->
+    <!--          label="Search"-->
+    <!--          outlined-->
+    <!--          square-->
+    <!--        />-->
+    <!--        <q-btn-->
+    <!--          color="primary"-->
+    <!--          label=""-->
+    <!--          icon="fas fa-search"-->
+    <!--          class="no-border-radius"-->
+    <!--        />-->
+    <!--      </q-form>-->
+
+
+    <!--      <q-input class="search" outlined v-model="search" label="Search" style="width: 100%"/>-->
+    <!--      <q-btn-dropdown-->
+    <!--        color="primary"-->
+    <!--        :label="`Sort By ${sortBy}`"-->
+    <!--        transition-show="flip-right"-->
+    <!--        transition-hide="flip-left"-->
+    <!--      >-->
+    <!--        <q-list dense style="min-width: 100px">-->
+    <!--          <q-item clickable v-close-popup @click.prevent="sort">-->
+    <!--            <q-item-section data-filter="views">Views</q-item-section>-->
+    <!--          </q-item>-->
+    <!--          <q-item clickable v-close-popup @click.prevent="sort">-->
+    <!--            <q-item-section data-filter="likes">Likes</q-item-section>-->
+    <!--          </q-item>-->
+    <!--          <q-item clickable v-close-popup @click.prevent="sort">-->
+    <!--            <q-item-section data-filter="shares">Shares</q-item-section>-->
+    <!--          </q-item>-->
+    <!--        </q-list>-->
+    <!--      </q-btn-dropdown>-->
+    <!--      <q-icon-->
+    <!--        class="fas fa-sort-amount-down-alt"-->
+    <!--        v-if="sortBy && sortDirection === 'asc'"-->
+    <!--      ></q-icon>-->
+    <!--      <q-icon-->
+    <!--        class="fas fa-sort-amount-down"-->
+    <!--        v-if="sortBy && sortDirection === 'desc'"-->
+    <!--      ></q-icon>-->
+
+    <!--    </div>-->
+
+<!--    <q-list class="full-width" bordered separator>-->
+<!--      <q-item-->
+<!--        class="element"-->
+<!--        v-for="post in searching"-->
+<!--        :key="post.name"-->
+<!--        v-ripple-->
+<!--        :to="{ name: 'VideoDetails', params: { id: post.id } }"-->
+<!--      >-->
+<!--        <q-avatar square size="100px" class="post-video">-->
+<!--          <img :src="post.video"/>-->
+<!--        </q-avatar>-->
+
+<!--        <q-item class="post-status">-->
+<!--          <q-item-label class="text-left full-width q-pl-s">-->
+<!--            ❞{{ post.status }}❞-->
+<!--          </q-item-label>-->
+<!--        </q-item>-->
+
+<!--        <q-item class="post-icons flex">-->
+<!--          <q-icon class="fab fa-tiktok"></q-icon>-->
+<!--          <q-icon class="fas fa-download q-mx-md"></q-icon>-->
+<!--          <q-icon class="fas fa-play"></q-icon>-->
+<!--        </q-item>-->
+
+<!--        <q-item class="post-date">-->
+<!--          <p class="text-caption text-weight-light">-->
+<!--            Video Added: {{ Math.floor(Math.random() * 6 + 1) }}h ago,-->
+<!--            {{ parseISOString(post.created) }}-->
+<!--          </p>-->
+<!--        </q-item>-->
+
+<!--        <q-item flex class="post-avatar-name">-->
+<!--          <q-avatar size="30px" class="q-mr-sm">-->
+<!--            <img :src="post.avatar" :alt="post.name"/>-->
+<!--          </q-avatar>-->
+<!--          <q-item-label class="post-name-container">-->
+<!--            <span class="post-name flex">{{ post.name }}</span>-->
+<!--          </q-item-label>-->
+<!--        </q-item>-->
+
+<!--        <div class="post-social">-->
+<!--          <q-item-label class="flex social-item">-->
+<!--            <q-icon class="social-icon" name="far fa-play-circle"></q-icon>-->
+<!--            <p>{{ post.views }}</p>-->
+<!--          </q-item-label>-->
+
+<!--          <q-item-label class="flex social-item q-mx-md">-->
+<!--            <q-icon class="social-icon" name="far fa-heart"></q-icon>-->
+<!--            <p>{{ post.likes }}</p>-->
+<!--          </q-item-label>-->
+
+<!--          <q-item-label class="flex social-item">-->
+<!--            <q-icon class="social-icon" name="far fa-share-square"></q-icon>-->
+<!--            <p>{{ post.shares }}</p>-->
+<!--          </q-item-label>-->
+<!--        </div>-->
+<!--      </q-item>-->
+<!--    </q-list>-->
   </q-page>
 </template>
 
 <script>
-import { parseISOString } from "src/service";
+import {parseISOString} from 'src/service';
 
-import FilterMobile from "src/components/FilterMobile.vue";
+import FilterMobile from 'src/components/FilterMobile.vue';
 
 export default {
 
@@ -106,46 +156,46 @@ export default {
   },
   data() {
     return {
-      search: "",
-      sortBy: "",
-      sortDirection: "asc",
+      search: '',
+      sortBy: true,
+      sortDirection: 'desc',
     };
   },
   methods: {
     parseISOString(s) {
       const dt = s.split(/[: T-]/).map(parseFloat);
-      return `${(dt[3] < 10 ? "0" + dt[3] : dt[3]) || 0}:${
-        (dt[4] < 10 ? "0" + dt[4] : dt[4]) || 0
+      return `${(dt[3] < 10 ? '0' + dt[3] : dt[3]) || 0}:${
+        (dt[4] < 10 ? '0' + dt[4] : dt[4]) || 0
       }`;
       // return `${dt[0]}-${dt[1]}-${(dt[2] < 10 ? '0' + dt[2] : dt[2]) || 0}, ${(dt[3] < 10 ? '0' + dt[3] : dt[3]) || 0}:${(dt[4] < 10 ? '0' + dt[4] : dt[4]) || 0}`;
       // return `${(dt[3] < 10 ? '0' + dt[3] : dt[3]) || 0}:${(dt[4] < 10 ? '0' + dt[4] : dt[4]) || 0}`;
     },
     sort(e) {
       if (e.target.dataset.filter === this.sortBy) {
-        this.sortDirection = this.sortDirection === "asc" ? "desc" : "asc";
+        this.sortDirection = this.sortDirection === 'asc' ? 'desc' : 'asc';
       }
       this.sortBy = e.target.dataset.filter;
     },
   },
   created() {
-    this.$store.dispatch("posts/fetchPosts");
+    this.$store.dispatch('posts/fetchPosts');
   },
   computed: {
     getposts() {
-      return this.$store.getters["posts/get_posts"];
+      return this.$store.getters['posts/get_posts'];
     },
     searching() {
       if (this.sort) {
         return this.getposts
           .filter((item) =>
-            item.name.toLowerCase().includes(this.search.toLowerCase())
+            item.name.toLowerCase().includes(this.search.toLowerCase()),
           )
           .sort((a, b) => {
             if (a[this.sortBy] === b[this.sortBy]) return 0;
             if (a[this.sortBy] > b[this.sortBy])
-              return this.sortDirection === "asc" ? 1 : -1;
+              return this.sortDirection === 'asc' ? 1 : -1;
             if (a[this.sortBy] < b[this.sortBy])
-              return this.sortDirection === "asc" ? -1 : 1;
+              return this.sortDirection === 'asc' ? -1 : 1;
           });
       } else {
         return this.getposts;
@@ -175,10 +225,10 @@ export default {
   grid-auto-columns: 120px auto;
   grid-auto-rows: fit-content(100%);
   grid-template-areas:
-    "video status status"
-    "video date date"
-    "video avatar-name avatar-name"
-    "icons social social";
+    'video status status'
+    'video date date'
+    'video avatar-name avatar-name'
+    'icons social social';
 
   > * {
     padding: 0;
