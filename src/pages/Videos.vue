@@ -1,8 +1,10 @@
 <template>
   <q-page>
 
+    <!--  FILTER  -->
     <div class="filter">
       <div class="container">
+
         <form @submit.prevent class="form_search">
           <input type="text" placeholder="Search"/>
           <q-btn color="primary" class="no-border-radius icon-search">
@@ -29,10 +31,57 @@
           <span>Filters</span>
         </div>
 
-
       </div>
-
     </div>
+
+    <!--  POSTS LIST  -->
+
+    <div class="posts-list">
+      <div class="container">
+        <div class="video_post" v-for="post in searching" :key="post.name">
+          <div class="post_title">{{ post.status }}</div>
+
+          <div class="video_block">
+            <img class="video_frame" :src="post.video" alt="">
+            <div class="video_added"></div>
+          </div>
+
+          <div class="tiktok_buttons">
+            <q-icon class="fab fa-tiktok grey-button"></q-icon>
+            <q-icon class="fas fa-user grey-button"></q-icon>
+            <q-icon class="fas fa-music grey-button"></q-icon>
+          </div>
+
+          <div class="social_block flex">
+            <div class="social_item flex column items-center">
+              <q-icon class="fas fa-heart"></q-icon>
+              <span>12.7M</span>
+            </div>
+            <div class="social_item middle flex column items-center">
+              <q-icon class="fas fa-share"></q-icon>
+              <span>130K</span>
+            </div>
+            <div class="social_item flex column items-center">
+              <q-icon class="fas fa-eye"></q-icon>
+              <span>28.2M</span>
+            </div>
+          </div>
+
+          <div class="user_block flex items-center">
+            <img class="user_avatar" :src="post.avatar" :alt="post.name"/>
+            <span class="user_name">{{ post.name }}</span>
+          </div>
+
+          <div class="music_block flex items-center">
+            <img src="/images/music_frame.png" alt="" class="music_frame">
+            <span class="music_title">Music Stuff</span>
+            <q-icon class="fas fa-play grey-button"></q-icon>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
 
     <!--    <div class="q-gutter-md q-pa-md items-center flex filter">-->
 
@@ -83,64 +132,64 @@
 
     <!--    </div>-->
 
-<!--    <q-list class="full-width" bordered separator>-->
-<!--      <q-item-->
-<!--        class="element"-->
-<!--        v-for="post in searching"-->
-<!--        :key="post.name"-->
-<!--        v-ripple-->
-<!--        :to="{ name: 'VideoDetails', params: { id: post.id } }"-->
-<!--      >-->
-<!--        <q-avatar square size="100px" class="post-video">-->
-<!--          <img :src="post.video"/>-->
-<!--        </q-avatar>-->
+    <!--    <q-list class="full-width" bordered separator>-->
+    <!--      <q-item-->
+    <!--        class="element"-->
+    <!--        v-for="post in searching"-->
+    <!--        :key="post.name"-->
+    <!--        v-ripple-->
+    <!--        :to="{ name: 'VideoDetails', params: { id: post.id } }"-->
+    <!--      >-->
+    <!--        <q-avatar square size="100px" class="post-video">-->
+    <!--          <img :src="post.video"/>-->
+    <!--        </q-avatar>-->
 
-<!--        <q-item class="post-status">-->
-<!--          <q-item-label class="text-left full-width q-pl-s">-->
-<!--            ❞{{ post.status }}❞-->
-<!--          </q-item-label>-->
-<!--        </q-item>-->
+    <!--        <q-item class="post-status">-->
+    <!--          <q-item-label class="text-left full-width q-pl-s">-->
+    <!--            ❞{{ post.status }}❞-->
+    <!--          </q-item-label>-->
+    <!--        </q-item>-->
 
-<!--        <q-item class="post-icons flex">-->
-<!--          <q-icon class="fab fa-tiktok"></q-icon>-->
-<!--          <q-icon class="fas fa-download q-mx-md"></q-icon>-->
-<!--          <q-icon class="fas fa-play"></q-icon>-->
-<!--        </q-item>-->
+    <!--        <q-item class="post-icons flex">-->
+    <!--          <q-icon class="fab fa-tiktok"></q-icon>-->
+    <!--          <q-icon class="fas fa-download q-mx-md"></q-icon>-->
+    <!--          <q-icon class="fas fa-play"></q-icon>-->
+    <!--        </q-item>-->
 
-<!--        <q-item class="post-date">-->
-<!--          <p class="text-caption text-weight-light">-->
-<!--            Video Added: {{ Math.floor(Math.random() * 6 + 1) }}h ago,-->
-<!--            {{ parseISOString(post.created) }}-->
-<!--          </p>-->
-<!--        </q-item>-->
+    <!--        <q-item class="post-date">-->
+    <!--          <p class="text-caption text-weight-light">-->
+    <!--            Video Added: {{ Math.floor(Math.random() * 6 + 1) }}h ago,-->
+    <!--            {{ parseISOString(post.created) }}-->
+    <!--          </p>-->
+    <!--        </q-item>-->
 
-<!--        <q-item flex class="post-avatar-name">-->
-<!--          <q-avatar size="30px" class="q-mr-sm">-->
-<!--            <img :src="post.avatar" :alt="post.name"/>-->
-<!--          </q-avatar>-->
-<!--          <q-item-label class="post-name-container">-->
-<!--            <span class="post-name flex">{{ post.name }}</span>-->
-<!--          </q-item-label>-->
-<!--        </q-item>-->
+    <!--        <q-item flex class="post-avatar-name">-->
+    <!--          <q-avatar size="30px" class="q-mr-sm">-->
+    <!--            <img :src="post.avatar" :alt="post.name"/>-->
+    <!--          </q-avatar>-->
+    <!--          <q-item-label class="post-name-container">-->
+    <!--            <span class="post-name flex">{{ post.name }}</span>-->
+    <!--          </q-item-label>-->
+    <!--        </q-item>-->
 
-<!--        <div class="post-social">-->
-<!--          <q-item-label class="flex social-item">-->
-<!--            <q-icon class="social-icon" name="far fa-play-circle"></q-icon>-->
-<!--            <p>{{ post.views }}</p>-->
-<!--          </q-item-label>-->
+    <!--        <div class="post-social">-->
+    <!--          <q-item-label class="flex social-item">-->
+    <!--            <q-icon class="social-icon" name="far fa-play-circle"></q-icon>-->
+    <!--            <p>{{ post.views }}</p>-->
+    <!--          </q-item-label>-->
 
-<!--          <q-item-label class="flex social-item q-mx-md">-->
-<!--            <q-icon class="social-icon" name="far fa-heart"></q-icon>-->
-<!--            <p>{{ post.likes }}</p>-->
-<!--          </q-item-label>-->
+    <!--          <q-item-label class="flex social-item q-mx-md">-->
+    <!--            <q-icon class="social-icon" name="far fa-heart"></q-icon>-->
+    <!--            <p>{{ post.likes }}</p>-->
+    <!--          </q-item-label>-->
 
-<!--          <q-item-label class="flex social-item">-->
-<!--            <q-icon class="social-icon" name="far fa-share-square"></q-icon>-->
-<!--            <p>{{ post.shares }}</p>-->
-<!--          </q-item-label>-->
-<!--        </div>-->
-<!--      </q-item>-->
-<!--    </q-list>-->
+    <!--          <q-item-label class="flex social-item">-->
+    <!--            <q-icon class="social-icon" name="far fa-share-square"></q-icon>-->
+    <!--            <p>{{ post.shares }}</p>-->
+    <!--          </q-item-label>-->
+    <!--        </div>-->
+    <!--      </q-item>-->
+    <!--    </q-list>-->
   </q-page>
 </template>
 

@@ -1,0 +1,112 @@
+.video {
+
+  &_post {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+    padding: 10px 0;
+    display: grid;
+    grid-template-columns: 80px fit-content(100%) 1fr 1fr 1fr;
+    grid-gap: 10px;
+    grid-template-areas:
+      'title title title title title'
+      'video_block tiktok_buttons social_block social_block social_block'
+      'video_block tiktok_buttons user_block user_block user_block'
+      'video_block tiktok_buttons music_block music_block music_block';
+  }
+
+
+  &_block {
+    grid-area: video_block;
+    width: 80px;
+    height: 110px;
+  }
+
+  &_frame {
+    display: block;
+    object-fit: cover;
+    width: inherit;
+    height: inherit;
+  }
+
+  &_added {
+
+  }
+}
+
+.post_title {
+  grid-area: title;
+  font-size: 16px;
+}
+
+.tiktok_buttons {
+  display: flex;
+  flex-direction: column;
+  grid-area: tiktok_buttons;
+  //align-self: center;
+
+  .fa-user {
+    margin: 10px 0;
+  }
+}
+
+
+.grey-button {
+  background-color: $light-grey;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+
+  &.fa-play {
+    margin-left: 10px;
+  }
+}
+
+.social {
+  &_block {
+    grid-area: social_block;
+  }
+
+  &_item {
+    > * {
+      color: #999;
+    }
+
+    span{
+      font-size: 12px;
+    }
+
+    &.middle {
+      margin: 0 10px;
+    }
+  }
+}
+
+.user {
+  &_block {
+    grid-area: user_block;
+  }
+
+  &_avatar {
+    width: 30px;
+    height: 30px;
+    margin-right: 10px;
+  }
+
+  &_name {
+
+  }
+
+}
+
+.music {
+
+  &_block {
+    grid-area: music_block;
+  }
+
+  &_frame {
+    width: 30px;
+    height: 30px;
+    margin-right: 10px;
+  }
+
+}

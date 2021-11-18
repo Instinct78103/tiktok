@@ -63,12 +63,13 @@
     select {
       display: inline-block;
       text-align: center;
-      padding: 0 5px;
       width: fit-content;
       background-color: transparent;
       border: none;
       -webkit-appearance: none;
       position: relative;
+      height: 16px;
+      line-height: 1;
 
       &:focus {
         outline: none;
@@ -90,6 +91,8 @@
     grid-column: 3 / span 1;
     grid-row: 2 / span 1;
     justify-content: flex-end;
+    height: 16px;
+    line-height: 1;
 
     .icon-filter {
       display: inline-block;
