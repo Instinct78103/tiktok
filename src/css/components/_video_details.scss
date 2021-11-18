@@ -50,6 +50,20 @@
   }
 }
 
-.user_block{
+.user_block {
+  display: grid;
+  grid-template-columns: repeat(4, fit-content(100%));
+  grid-template-rows: repeat(2, fit-content(100%));
+  grid-column-gap: 10px;
+  margin-bottom: 10px;
 
+  .user_avatar {
+    width: 40px;
+  }
+}
+
+.music_block {
+  .music_frame {
+    width: 40px;
+  }
 }
