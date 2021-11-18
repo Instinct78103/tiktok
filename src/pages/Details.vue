@@ -3,7 +3,6 @@
 
     <div class="post_details">
       <div class="container">
-        {{details}}
 
         <!--TOP-->
         <div class="top">
@@ -32,14 +31,14 @@
         </div>
 
         <div class="user_block flex items-center">
+          <q-icon class="fas fa-user grey-button"></q-icon>
           <img class="user_avatar" :src="details?.avatar" :alt="details?.name"/>
           <span class="user_name">{{ details?.name }}</span>
-        </div>
-
-        <div class="music_block flex items-center">
+          <q-icon class="fas fa-music grey-button"></q-icon>
           <img src="/images/music_frame.png" alt="" class="music_frame">
           <span class="music_title">Music Stuff</span>
           <q-icon class="fas fa-play grey-button"></q-icon>
+          <q-icon class="fas fa-download grey-button"></q-icon>
         </div>
 
       </div>
@@ -107,7 +106,7 @@ export default defineComponent({
   },
   data() {
     return {
-      details: null,
+      details: {},
     };
   },
   methods: {
@@ -140,7 +139,7 @@ export default defineComponent({
 });
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 
 @import 'src/css/components/video_details';
 
