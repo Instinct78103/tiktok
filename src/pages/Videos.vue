@@ -39,11 +39,18 @@
     <div class="posts-list">
       <div class="container">
         <div class="video_post" v-for="post in searching" :key="post.name">
-          <div class="post_title">{{ post.status }}</div>
+          <div class="post_title">
+            <router-link :to="{ name: 'VideoDetails', params: { id: post.id } }">{{ post.status }}</router-link>
+          </div>
 
           <div class="video_block">
-            <img class="video_frame" :src="post.video" alt="">
-            <div class="video_added"></div>
+            <router-link :to="{ name: 'VideoDetails', params: { id: post.id } }" class="video_frame">
+              <img :src="post.video" alt="">
+            </router-link>
+            <div class="video_added flex column">
+              <span class="time flex flex-center"><q-icon class="fas fa-clock"></q-icon>00:46</span>
+              <span class="ago">5h ago</span>
+            </div>
           </div>
 
           <div class="tiktok_buttons">
@@ -253,127 +260,130 @@ export default {
   },
 };
 </script>
-<style lang="scss">
-.q-item {
-  min-height: unset;
-}
+<style lang="scss" scoped>
+@import "src/css/components/filter";
+@import "src/css/components/video_post";
 
-.q-icon {
-  font-size: 16px;
-}
-
-.element {
-  max-width: 640px;
-  display: grid;
-  margin: 0 auto;
-  width: 100%;
-  padding: 10px;
-  align-items: center;
-  justify-items: flex-end;
-  grid-gap: 10px;
-  grid-auto-columns: 120px auto;
-  grid-auto-rows: fit-content(100%);
-  grid-template-areas:
-    'video status status'
-    'video date date'
-    'video avatar-name avatar-name'
-    'icons social social';
-
-  > * {
-    padding: 0;
-  }
-
-  *:not(.text-caption) {
-    font-size: 16px;
-  }
-}
-
-.post {
-  &-video {
-    grid-area: video;
-    width: 100%;
-    align-self: flex-start;
-  }
-
-  &-date {
-    grid-area: date;
-    width: 100%;
-
-    p {
-      margin: 0;
-    }
-  }
-
-  &-status {
-    grid-area: status;
-    width: 100%;
-    align-self: flex-start;
-
-    p {
-      width: fit-content;
-      margin: 10px 0 0;
-      text-align: left;
-    }
-  }
-
-  &-icons {
-    grid-area: icons;
-    padding: 0;
-    justify-content: center;
-    align-items: flex-start;
-    width: 100%;
-  }
-
-  &-avatar-name {
-    grid-area: avatar-name;
-    justify-content: center;
-    align-items: center;
-    padding: 0;
-    width: 100%;
-  }
-
-  &-social {
-    grid-area: social;
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 1em;
-
-    .social-item {
-      align-items: center;
-      margin-top: 0;
-
-      &:last-child {
-        margin-right: 0;
-      }
-
-      .social-icon {
-        margin-right: 5px;
-      }
-    }
-
-    p {
-      margin: 0;
-    }
-  }
-
-  &-avatar {
-    grid-area: avatar;
-    justify-self: center;
-    padding: 0;
-    margin-top: 30px;
-  }
-
-  &-name-container {
-    display: flex;
-    flex-flow: column;
-    align-items: flex-start;
-
-    .post-name {
-      font-weight: 600;
-      align-items: center;
-    }
-  }
-}
+//.q-item {
+//  min-height: unset;
+//}
+//
+//.q-icon {
+//  font-size: 16px;
+//}
+//
+//.element {
+//  max-width: 640px;
+//  display: grid;
+//  margin: 0 auto;
+//  width: 100%;
+//  padding: 10px;
+//  align-items: center;
+//  justify-items: flex-end;
+//  grid-gap: 10px;
+//  grid-auto-columns: 120px auto;
+//  grid-auto-rows: fit-content(100%);
+//  grid-template-areas:
+//    'video status status'
+//    'video date date'
+//    'video avatar-name avatar-name'
+//    'icons social social';
+//
+//  > * {
+//    padding: 0;
+//  }
+//
+//  *:not(.text-caption) {
+//    font-size: 16px;
+//  }
+//}
+//
+//.post {
+//  &-video {
+//    grid-area: video;
+//    width: 100%;
+//    align-self: flex-start;
+//  }
+//
+//  &-date {
+//    grid-area: date;
+//    width: 100%;
+//
+//    p {
+//      margin: 0;
+//    }
+//  }
+//
+//  &-status {
+//    grid-area: status;
+//    width: 100%;
+//    align-self: flex-start;
+//
+//    p {
+//      width: fit-content;
+//      margin: 10px 0 0;
+//      text-align: left;
+//    }
+//  }
+//
+//  &-icons {
+//    grid-area: icons;
+//    padding: 0;
+//    justify-content: center;
+//    align-items: flex-start;
+//    width: 100%;
+//  }
+//
+//  &-avatar-name {
+//    grid-area: avatar-name;
+//    justify-content: center;
+//    align-items: center;
+//    padding: 0;
+//    width: 100%;
+//  }
+//
+//  &-social {
+//    grid-area: social;
+//    width: 100%;
+//    display: flex;
+//    justify-content: center;
+//    align-items: center;
+//    font-size: 1em;
+//
+//    .social-item {
+//      align-items: center;
+//      margin-top: 0;
+//
+//      &:last-child {
+//        margin-right: 0;
+//      }
+//
+//      .social-icon {
+//        margin-right: 5px;
+//      }
+//    }
+//
+//    p {
+//      margin: 0;
+//    }
+//  }
+//
+//  &-avatar {
+//    grid-area: avatar;
+//    justify-self: center;
+//    padding: 0;
+//    margin-top: 30px;
+//  }
+//
+//  &-name-container {
+//    display: flex;
+//    flex-flow: column;
+//    align-items: flex-start;
+//
+//    .post-name {
+//      font-weight: 600;
+//      align-items: center;
+//    }
+//  }
+//}
 </style>

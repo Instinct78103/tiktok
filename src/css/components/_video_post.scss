@@ -18,17 +18,37 @@
     grid-area: video_block;
     width: 80px;
     height: 110px;
+    position: relative;
+
+    a {
+      width: inherit;
+      height: inherit;
+    }
   }
 
   &_frame {
     display: block;
-    object-fit: cover;
-    width: inherit;
-    height: inherit;
+
+    img {
+      object-fit: cover;
+      width: inherit;
+      height: inherit;
+    }
   }
 
   &_added {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    color: #fff;
+    text-align: center;
+    background-color: rgba(0, 0, 0, 0.35);
+    font-size: 12px;
 
+    .fa-clock {
+      font-size: 10px;
+      margin-right: 4px;
+    }
   }
 }
 
@@ -41,7 +61,7 @@
   display: flex;
   flex-direction: column;
   grid-area: tiktok_buttons;
-  //align-self: center;
+  align-self: flex-end;
 
   .fa-user {
     margin: 10px 0;
@@ -50,10 +70,8 @@
 
 
 .grey-button {
-  background-color: $light-grey;
   width: 30px;
   height: 30px;
-  border-radius: 50%;
 
   &.fa-play {
     margin-left: 10px;
@@ -70,7 +88,7 @@
       color: #999;
     }
 
-    span{
+    span {
       font-size: 12px;
     }
 
