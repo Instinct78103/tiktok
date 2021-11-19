@@ -34,9 +34,14 @@
           <q-icon class="fas fa-user grey-button"></q-icon>
           <img class="user_avatar" :src="details?.avatar" :alt="details?.name"/>
           <span class="user_name">{{ details?.name }}</span>
+        </div>
+
+        <div class="music_block">
           <q-icon class="fas fa-music grey-button"></q-icon>
-          <img src="/images/music_frame.png" alt="" class="music_frame">
-          <span class="music_title">Music Stuff</span>
+          <p class="music_title">
+            <img src="/images/music_frame.png" alt="" class="music_frame">
+            <span>Music Stuff</span>
+          </p>
           <q-icon class="fas fa-play grey-button"></q-icon>
           <q-icon class="fas fa-download grey-button"></q-icon>
         </div>
