@@ -30,11 +30,15 @@
           </div>
         </div>
 
+        <!-- USER -->
+
         <div class="user_block flex items-center">
           <q-icon class="fas fa-user grey-button"></q-icon>
           <img class="user_avatar" :src="details?.avatar" :alt="details?.name"/>
           <span class="user_name">{{ details?.name }}</span>
         </div>
+
+        <!-- MUSIC -->
 
         <div class="music_block">
           <q-icon class="fas fa-music grey-button"></q-icon>
@@ -44,6 +48,45 @@
           </p>
           <q-icon class="fas fa-play grey-button"></q-icon>
           <q-icon class="fas fa-download grey-button"></q-icon>
+        </div>
+
+        <!-- SOCIAL -->
+
+        <div class="social_block flex">
+          <div class="social_item flex column items-center">
+            <q-icon class="fas fa-heart"></q-icon>
+            <span class="value">12.7M</span>
+          </div>
+          <div class="social_item middle flex column items-center">
+            <q-icon class="fas fa-share"></q-icon>
+            <span class="value">130K</span>
+          </div>
+          <div class="social_item flex column items-center">
+            <q-icon class="fas fa-eye"></q-icon>
+            <span class="value">28.2M</span>
+          </div>
+          <div class="social_item flex column items-center">
+            <q-icon class="fas fa-comments"></q-icon>
+            <span class="value">156K</span>
+          </div>
+          <div class="social_item flex column items-center">
+            <span class="index">ER</span>
+            <span class="value">22.6%</span>
+          </div>
+          <div class="social_item flex column items-center">
+            <span class="index">TS</span>
+            <span class="value">x0.02</span>
+          </div>
+        </div>
+
+        <!-- STATISTICS -->
+
+        <div class="stats">
+          <div class="heading items-center">
+            <q-icon class="fas fa-chart-line"></q-icon>
+            <h2>Daily Statistics:</h2>
+            <q-icon class="fas fa-calendar-day grey-button"></q-icon>
+          </div>
         </div>
 
       </div>
@@ -97,15 +140,49 @@
     <!--      </div>-->
     <!--      <div class="table"></div>-->
     <!--    </div>-->
+
+    <div class="layout-view">
+      <canvas ref="canvas"></canvas>
+    </div>
+
   </q-page>
 </template>
 
 <script>
-import {parseISOString} from 'src/service';
+// import {parseISOString} from 'src/service';
 import {defineComponent} from 'vue';
+import {Line} from 'vue-chartjs';
 
 export default defineComponent({
   name: 'PageIndex',
+  extends: Line,
+  components: {},
+  mounted() {
+    this.renderChart({
+      labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+      datasets: [{
+        label: '# of Votes',
+        data: [12, 19, 3, 5, 2, 3],
+        backgroundColor: [
+          'rgba(255, 99, 132, 0.2)',
+          'rgba(54, 162, 235, 0.2)',
+          'rgba(255, 206, 86, 0.2)',
+          'rgba(75, 192, 192, 0.2)',
+          'rgba(153, 102, 255, 0.2)',
+          'rgba(255, 159, 64, 0.2)',
+        ],
+        borderColor: [
+          'rgba(255, 99, 132, 1)',
+          'rgba(54, 162, 235, 1)',
+          'rgba(255, 206, 86, 1)',
+          'rgba(75, 192, 192, 1)',
+          'rgba(153, 102, 255, 1)',
+          'rgba(255, 159, 64, 1)',
+        ],
+        borderWidth: 1,
+      }],
+    });
+  },
   created() {
     this.fetchDetails();
   },
@@ -145,88 +222,5 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-
 @import 'src/css/components/video_details';
-
-
-//.author-info {
-//  width: 100%;
-//  display: grid;
-//  grid-template-areas:
-//    'content'
-//    'status'
-//    'video'
-//    'graph'
-//    'stats'
-//    'table';
-//
-//  > * {
-//    margin: 10px 0;
-//  }
-//}
-//
-//.content {
-//  grid-area: content;
-//  display: flex;
-//  align-items: center;
-//  justify-content: center;
-//
-//  span {
-//    font-size: 1.5em;
-//  }
-//}
-//
-//.status {
-//  grid-area: status;
-//  display: flex;
-//  justify-content: center;
-//  text-align: center;
-//}
-//
-//.graph {
-//  grid-area: graph;
-//}
-//
-//.stats {
-//  grid-area: stats;
-//
-//  h5 {
-//    text-align: center;
-//  }
-//
-//  .author-social {
-//    width: 100%;
-//    display: flex;
-//    justify-content: center;
-//    align-items: center;
-//    font-size: 1.5em;
-//
-//    .social-item {
-//      align-items: center;
-//      margin: 0 20px 0 0;
-//
-//      &:last-child {
-//        margin-right: 0;
-//      }
-//
-//      .social-icon {
-//        margin-right: 10px;
-//      }
-//    }
-//
-//    p {
-//      margin: 0;
-//    }
-//  }
-//}
-//
-//.video {
-//  grid-area: video;
-//}
-//
-//.table {
-//  grid-area: table;
-//}
-
-
 </style>

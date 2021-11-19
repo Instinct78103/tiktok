@@ -4,27 +4,31 @@
   font-size: 24px;
 }
 
+.q-icon{
+  font-size: 1.5rem;
+}
+
 .post_details {
   padding-top: 10px;
   padding-bottom: 10px;
 }
 
 .top {
-  .heading {
-    margin-bottom: 10px;
-
-    h2 {
-      font-size: 18px;
-      line-height: 1;
-      font-weight: bold;
-      margin-top: 0;
-      margin-bottom: 0;
-      margin-left: 10px;
-    }
-  }
-
   .post_title {
 
+  }
+}
+
+.heading {
+  margin-bottom: 10px;
+
+  h2 {
+    font-size: 18px;
+    line-height: 1;
+    font-weight: bold;
+    margin-top: 0;
+    margin-bottom: 0;
+    margin-left: 10px;
   }
 }
 
@@ -53,7 +57,6 @@
 .user_block {
   display: grid;
   grid-template-columns: repeat(4, fit-content(100%));
-  //grid-template-rows: repeat(2, fit-content(100%));
   grid-column-gap: 10px;
   margin-bottom: 10px;
 
@@ -67,13 +70,14 @@
   grid-template-columns: repeat(4, fit-content(100%));
   grid-column-gap: 10px;
   height: fit-content;
+  margin-bottom: 30px;
 
   .music_title {
     display: flex;
     align-items: center;
     margin-bottom: 0;
 
-    img{
+    img {
 
     }
   }
@@ -81,5 +85,37 @@
   .music_frame {
     width: 40px;
     margin-right: 10px;
+  }
+}
+
+.social_block {
+  width: 100%;
+  justify-content: space-evenly;
+  align-items: center;
+  margin-bottom: 30px;
+
+  .fas {
+    font-size: 1.5rem;
+  }
+
+  .value {
+    font-size: 0.75rem;
+  }
+
+  .index {
+    font-size: 0.75rem;
+    font-weight: bold;
+
+    & + .value {
+      font-weight: bold;
+    }
+  }
+}
+
+.stats{
+  .heading{
+    display: grid;
+    grid-template-columns: fit-content(100%) auto fit-content(100%);
+    align-items: center;
   }
 }
