@@ -44,6 +44,16 @@
     text-align: center;
     background-color: rgba(0, 0, 0, 0.35);
     font-size: 12px;
+    padding: 4px 0;
+
+    .time,
+    .ago{
+      line-height: 1;
+    }
+
+    .time{
+      margin-bottom: 4px;
+    }
 
     .fa-clock {
       font-size: 10px;

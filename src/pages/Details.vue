@@ -51,7 +51,6 @@
         </div>
 
         <!-- SOCIAL -->
-
         <div class="social_block flex">
           <div class="social_item flex column items-center">
             <q-icon class="fas fa-heart"></q-icon>
@@ -80,8 +79,7 @@
         </div>
 
         <!-- STATISTICS -->
-
-        <div class="stats">
+        <div class="daily_block">
           <div class="heading items-center">
             <q-icon class="fas fa-chart-line"></q-icon>
             <h2>Daily Statistics:</h2>
@@ -89,60 +87,19 @@
           </div>
         </div>
 
+        <div class="hourly_block">
+          <div class="heading items-center">
+            <q-icon class="fas fa-clock"></q-icon>
+            <h2>Hourly Statistics:</h2>
+          </div>
+        </div>
+
+        <!-- CHART -->
+        <div class="chart_block">
+          <canvas ref="canvas"></canvas>
+        </div>
+
       </div>
-    </div>
-
-
-    <!--    <div class="author-info" v-if="details">-->
-    <!--      <div class="content">-->
-    <!--        <q-avatar size="100px" class="q-mb-sm">-->
-    <!--          <img :src="details?.avatar"/>-->
-    <!--        </q-avatar>-->
-    <!--        <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48">-->
-    <!--          <path-->
-    <!--            d="M38.4,21.68V16c-2.66,0-4.69-.71-6-2.09a8.9,8.9,0,0,1-2.13-5.64V7.86L24.9,7.73s0,.23,0,.54V30.8a5,5,0,1,1-3.24-5.61v-5.5a10.64,10.64,0,0,0-1.7-.14A10.36,10.36,0,1,0,30.32,29.91a10.56,10.56,0,0,0-.08-1.27V19.49A14.48,14.48,0,0,0,38.4,21.68Z"/>-->
-    <!--        </svg>-->
-    <!--        <span>{{ details?.name }}</span>-->
-    <!--      </div>-->
-    <!--      <div class="status">❞{{ details?.status }}</div>-->
-    <!--      <div class="video">-->
-    <!--        <q-video-->
-    <!--          :ratio="16/9"-->
-    <!--          src="https://v16-web.tiktok.com/video/tos/useast5/tos-useast5-ve-0068c003-tx/302b0dc310224d28b5cd13db39395788/?a=1988&br=3814&bt=1907&cd=0%7C0%7C1&ch=0&cr=0&cs=0&cv=1&dr=0&ds=3&er=&expire=1636046010&ft=9wMeRe6d4kag3&l=202111041113170102452421950D273470&lr=tiktok_m&mime_type=video_mp4&net=0&pl=0&policy=3&qs=0&rc=ang1eTY6Zm5uOTMzZzczNEApZDgzOjM0aTxkN2k0NzM3aGdlaGRncjQwZi5gLS1kMS9zc2EyLzBgLjZgMy9eXy0zYy06Yw%3D%3D&signature=4964e6b7eb68f6aa75e45e39b8481118&tk=0&vl=&vr="-->
-    <!--        />-->
-    <!--        <div class="created">-->
-    <!--          <p class="text-center text-caption text-weight-light q-mt-sm">-->
-    <!--            Video Added:<br>{{ parsedDate }}-->
-    <!--          </p>-->
-    <!--        </div>-->
-    <!--      </div>-->
-    <!--      <div class="graph"></div>-->
-    <!--      <div class="stats">-->
-    <!--        <h5>Video Statistics</h5>-->
-    <!--        <div class="author-social">-->
-    <!--          <q-item-label class="flex social-item">-->
-    <!--            <q-icon class="social-icon" name="far fa-play-circle"></q-icon>-->
-    <!--            <p>{{ details?.views }}</p>-->
-    <!--          </q-item-label>-->
-    <!--          <q-item-label class="flex social-item">-->
-    <!--            <q-icon class="social-icon" name="far fa-heart"></q-icon>-->
-    <!--            <p>{{ details?.likes }}</p>-->
-    <!--          </q-item-label>-->
-    <!--          <q-item-label class="flex social-item">-->
-    <!--            <q-icon class="social-icon" name="far fa-share-square"></q-icon>-->
-    <!--            <p>{{ details?.shares }}</p>-->
-    <!--          </q-item-label>-->
-    <!--          <q-item-label class="flex social-item">-->
-    <!--            <q-icon class="social-icon" name="far fa-user"></q-icon>-->
-    <!--            <p>{{ details?.followers }}</p>-->
-    <!--          </q-item-label>-->
-    <!--        </div>-->
-    <!--      </div>-->
-    <!--      <div class="table"></div>-->
-    <!--    </div>-->
-
-    <div class="layout-view">
-      <canvas ref="canvas"></canvas>
     </div>
 
   </q-page>
@@ -161,8 +118,8 @@ export default defineComponent({
     this.renderChart({
       labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
       datasets: [{
-        label: '# of Votes',
-        data: [12, 19, 3, 5, 2, 3],
+        label: '',
+        data: [2, 35, 3, 5, 19, 3],
         backgroundColor: [
           'rgba(255, 99, 132, 0.2)',
           'rgba(54, 162, 235, 0.2)',

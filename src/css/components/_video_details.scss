@@ -4,16 +4,33 @@
   font-size: 24px;
 }
 
-.q-icon{
+.q-icon {
   font-size: 1.5rem;
 }
 
 .post_details {
   padding-top: 10px;
   padding-bottom: 10px;
+  max-width: 1440px;
+  margin: 0 auto;
+}
+
+.container {
+  @media (min-width: 1200px) {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    grid-column-gap: 20px;
+    grid-template-areas:
+    'top top social_block social_block chart_block chart_block'
+    'video_block video_block user_block user_block chart_block chart_block'
+    'video_block video_block music_block music_block chart_block chart_block'
+    'daily_block daily_block daily_block hourly_block hourly_block hourly_block';
+  }
 }
 
 .top {
+  grid-area: top;
+
   .post_title {
 
   }
@@ -33,6 +50,7 @@
 }
 
 .video_block {
+  grid-area: video_block;
 
   .video_frame {
     width: 110px;
@@ -56,9 +74,14 @@
 
 .user_block {
   display: grid;
+  grid-area: user_block;
   grid-template-columns: repeat(4, fit-content(100%));
   grid-column-gap: 10px;
   margin-bottom: 10px;
+
+  @media (min-width: 1200px) {
+    margin-bottom: 0;
+  }
 
   .user_avatar {
     width: 40px;
@@ -67,10 +90,15 @@
 
 .music_block {
   display: grid;
+  grid-area: music_block;
   grid-template-columns: repeat(4, fit-content(100%));
   grid-column-gap: 10px;
   height: fit-content;
   margin-bottom: 30px;
+
+  @media (min-width: 1200px) {
+    margin-bottom: 0;
+  }
 
   .music_title {
     display: flex;
@@ -89,10 +117,15 @@
 }
 
 .social_block {
+  grid-area: social_block;
   width: 100%;
-  justify-content: space-evenly;
+  justify-content: center;
   align-items: center;
   margin-bottom: 30px;
+
+  @media (min-width: 1200px) {
+    margin-bottom: 0;
+  }
 
   .fas {
     font-size: 1.5rem;
@@ -110,12 +143,43 @@
       font-weight: bold;
     }
   }
+
+  .social_item {
+    margin-right: max(1vw, 20px);
+
+    &:last-child {
+      margin-right: 0;
+    }
+  }
 }
 
-.stats{
-  .heading{
+.daily_block {
+  display: grid;
+  grid-area: daily_block;
+  margin-top: 20px;
+
+  .heading {
     display: grid;
     grid-template-columns: fit-content(100%) auto fit-content(100%);
     align-items: center;
+    margin-bottom: 0;
+    width: 50%;
   }
+}
+
+.hourly_block {
+  display: grid;
+  grid-area: hourly_block;
+  margin-top: 20px;
+
+  .heading {
+    display: grid;
+    grid-template-columns: fit-content(100%) auto;
+    align-items: center;
+    margin-bottom: 0;
+  }
+}
+
+.chart_block {
+  grid-area: chart_block;
 }
