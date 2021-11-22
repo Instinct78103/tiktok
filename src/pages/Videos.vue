@@ -2,7 +2,7 @@
   <q-page>
 
     <!--  FILTER  -->
-    <div class="filter">
+    <div class="filter" :style="isMobile ? {backgroundColor: '#eee'}: '' ">
       <div class="container">
         <q-select standart v-model="model" :options="options" label="Sort By"
                   transition-show="flip-up"
@@ -39,64 +39,35 @@
     </div>
 
     <!--  POSTS LIST  -->
-    <div class="posts-list">
+    <div class="table_heading" v-if="!isMobile">
       <div class="container">
-        <div class="video_post" v-for="post in searching" :key="post.name">
-          <div class="post_title">
-            <router-link :to="{ name: 'VideoDetails', params: { id: post.id } }">{{ post.status }}</router-link>
-          </div>
-
-          <div class="video_block">
-            <router-link :to="{ name: 'VideoDetails', params: { id: post.id } }" class="video_frame">
-              <img :src="post.video" alt="">
-            </router-link>
-            <div class="video_added flex column">
-              <span class="time flex flex-center"><q-icon class="fas fa-clock"></q-icon>00:46</span>
-              <span class="ago">5h ago</span>
-            </div>
-          </div>
-
-          <div class="tiktok_buttons">
-            <q-icon class="fab fa-tiktok grey-button"></q-icon>
-            <q-icon class="fas fa-user grey-button"></q-icon>
-            <q-icon class="fas fa-music grey-button"></q-icon>
-          </div>
-
-          <div class="social_block flex">
-            <div class="social_item flex column items-center">
-              <q-icon class="fas fa-heart"></q-icon>
-              <span>12.7M</span>
-            </div>
-            <div class="social_item middle flex column items-center">
-              <q-icon class="fas fa-share"></q-icon>
-              <span>130K</span>
-            </div>
-            <div class="social_item flex column items-center">
-              <q-icon class="fas fa-eye"></q-icon>
-              <span>28.2M</span>
-            </div>
-          </div>
-
-          <div class="user_block flex items-center">
-            <img class="user_avatar" :src="post.avatar" :alt="post.name"/>
-            <span class="user_name">{{ post.name }}</span>
-          </div>
-
-          <div class="music_block flex items-center">
-            <img src="/images/music_frame.png" alt="" class="music_frame">
-            <span class="music_title">Music Stuff</span>
-            <q-icon class="fas fa-play grey-button"></q-icon>
-          </div>
-
+        <div class="th">
+          <span class="video_content">Video Content</span>
+          <span class="author">Author</span>
+          <span class="music">Music</span>
+          <span class="growth">Growth</span>
+          <span class="views"><q-icon class="fas fa-eye"></q-icon></span>
+          <span class="likes"><q-icon class="fas fa-heart"></q-icon></span>
+          <span class="comments"><q-icon class="fas fa-comments"></q-icon></span>
+          <span class="shares"><q-icon class="fas fa-share"></q-icon></span>
+          <span class="er">ER</span>
+          <span class="ts">TS</span>
         </div>
       </div>
     </div>
+    <div class="posts-list">
+      <div class="container">
+        <video-post v-for="post in searching" :key="post.name" :post="post" :is-mobile="isMobile"></video-post>
+      </div>
+    </div>
+
   </q-page>
 </template>
 
 <script>
 import FilterMobile from 'src/components/FilterMobile.vue';
 import {ref} from 'vue';
+import VideoPost from 'components/VideoPost';
 
 export default {
   setup() {
@@ -107,9 +78,11 @@ export default {
 
   components: {
     FilterMobile,
+    VideoPost,
   },
   data() {
     return {
+      innerWidth: 0,
       search: '',
       sortBy: true,
       sortDirection: 'desc',
@@ -130,14 +103,22 @@ export default {
   },
   created() {
     this.$store.dispatch('posts/fetchPosts');
+
+    this.innerWidth = window.innerWidth;
+    window.addEventListener('resize', () => {
+      this.innerWidth = window.innerWidth;
+    });
   },
   computed: {
-    getposts() {
+    isMobile() {
+      return this.innerWidth < 1200;
+    },
+    getPosts() {
       return this.$store.getters['posts/get_posts'];
     },
     searching() {
       if (this.sort) {
-        return this.getposts
+        return this.getPosts
           .filter((item) =>
             item.name.toLowerCase().includes(this.search.toLowerCase()),
           )
@@ -149,7 +130,7 @@ export default {
               return this.sortDirection === 'asc' ? -1 : 1;
           });
       } else {
-        return this.getposts;
+        return this.getPosts;
       }
     },
   },
@@ -157,5 +138,6 @@ export default {
 </script>
 <style lang="scss" scoped>
 @import 'src/css/components/filter';
-@import 'src/css/components/video_post';
+@import 'src/css/components/table_header';
+
 </style>

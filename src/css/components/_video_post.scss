@@ -1,6 +1,6 @@
 .video {
 
-  &_post {
+  &_post_mobile {
     border-bottom: 1px solid rgba(0, 0, 0, 0.12);
     padding: 10px 0;
     display: grid;
@@ -47,11 +47,11 @@
     padding: 4px 0;
 
     .time,
-    .ago{
+    .ago {
       line-height: 1;
     }
 
-    .time{
+    .time {
       margin-bottom: 4px;
     }
 
@@ -135,6 +135,112 @@
     width: 30px;
     height: 30px;
     margin-right: 10px;
+  }
+
+}
+
+.chart_block {
+  grid-area: chart_block;
+}
+
+.video_post_desktop {
+  display: grid;
+  grid-template-areas: 'video_block title user_block music_block chart_block social_block';
+  grid-template-columns: repeat(2, fit-content(100%)) 200px 160px repeat(2, fit-content(100%));
+  align-items: flex-start;
+  grid-column-gap: 10px;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 10px;
+  margin-bottom: 10px;
+
+  .video_block {
+    display: grid;
+    grid-template-columns: fit-content(100%) 80px;
+    grid-column-gap: 10px;
+    position: static;
+    height: fit-content;
+    width: auto;
+
+    .fa-tiktok {
+      width: 30px;
+    }
+
+    .video_frame {
+      height: 60px;
+      position: relative;
+    }
+
+    .video_added {
+      flex-direction: row;
+      justify-content: center;
+      align-items: baseline;
+
+      .fa-clock,
+      .time,
+      .ago {
+        font-size: 9px;
+      }
+
+      .time {
+        margin-bottom: 0;
+        margin-right: 4px;
+      }
+    }
+  }
+
+  .post_title {
+    width: 120px;
+    font-size: 12px;
+    line-height: 1.2;
+
+    a {
+      color: #000;
+    }
+  }
+
+  .user_block {
+    display: grid;
+    grid-template-columns: repeat(3, fit-content(100%));
+    grid-column-gap: 10px;
+
+    .user_avatar {
+      margin-right: 0;
+    }
+  }
+
+  .music_block {
+    display: grid;
+    grid-template-columns: repeat(3, fit-content(100%));
+    grid-template-rows: repeat(2, fit-content(100%));
+    grid-gap: 10px;
+
+    .music_frame {
+      margin-right: 0;
+    }
+
+    .fa-play {
+      margin-left: 0;
+    }
+  }
+
+  .chart_block {
+    canvas {
+      width: 120px;
+    }
+  }
+
+  .social_block {
+    display: grid;
+    grid-template-columns: repeat(6, 46px);
+    grid-column-gap: 10px;
+
+    .social_item {
+      margin: 0 !important;
+
+      span {
+        color: #000;
+      }
+    }
   }
 
 }

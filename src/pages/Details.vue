@@ -13,6 +13,7 @@
           <p class="post_title">{{ details?.status }}</p>
         </div>
 
+        <!-- VIDEO BLOCK -->
         <div class="video_block flex">
           <img :src="details?.video" class="video_frame" alt="">
           <div class="video_data">
@@ -31,7 +32,6 @@
         </div>
 
         <!-- USER -->
-
         <div class="user_block flex items-center">
           <q-icon class="fas fa-user grey-button"></q-icon>
           <img class="user_avatar" :src="details?.avatar" :alt="details?.name"/>
@@ -39,7 +39,6 @@
         </div>
 
         <!-- MUSIC -->
-
         <div class="music_block">
           <q-icon class="fas fa-music grey-button"></q-icon>
           <p class="music_title">
@@ -94,10 +93,9 @@
           </div>
         </div>
 
+
         <!-- CHART -->
-        <div class="chart_block">
-          <canvas ref="canvas"></canvas>
-        </div>
+        <chart></chart>
 
       </div>
     </div>
@@ -106,40 +104,42 @@
 </template>
 
 <script>
-// import {parseISOString} from 'src/service';
 import {defineComponent} from 'vue';
-import {Line} from 'vue-chartjs';
+import Chart from 'components/Chart';
+// import {Line} from 'vue-chartjs';
 
 export default defineComponent({
   name: 'PageIndex',
-  extends: Line,
-  components: {},
-  mounted() {
-    this.renderChart({
-      labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
-      datasets: [{
-        label: '',
-        data: [2, 35, 3, 5, 19, 3],
-        backgroundColor: [
-          'rgba(255, 99, 132, 0.2)',
-          'rgba(54, 162, 235, 0.2)',
-          'rgba(255, 206, 86, 0.2)',
-          'rgba(75, 192, 192, 0.2)',
-          'rgba(153, 102, 255, 0.2)',
-          'rgba(255, 159, 64, 0.2)',
-        ],
-        borderColor: [
-          'rgba(255, 99, 132, 1)',
-          'rgba(54, 162, 235, 1)',
-          'rgba(255, 206, 86, 1)',
-          'rgba(75, 192, 192, 1)',
-          'rgba(153, 102, 255, 1)',
-          'rgba(255, 159, 64, 1)',
-        ],
-        borderWidth: 1,
-      }],
-    });
+  // extends: Line,
+  components: {
+    Chart
   },
+  // mounted() {
+  //   this.renderChart({
+  //     labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+  //     datasets: [{
+  //       label: '',
+  //       data: [2, 35, 3, 5, 19, 3],
+  //       backgroundColor: [
+  //         'rgba(255, 99, 132, 0.2)',
+  //         'rgba(54, 162, 235, 0.2)',
+  //         'rgba(255, 206, 86, 0.2)',
+  //         'rgba(75, 192, 192, 0.2)',
+  //         'rgba(153, 102, 255, 0.2)',
+  //         'rgba(255, 159, 64, 0.2)',
+  //       ],
+  //       borderColor: [
+  //         'rgba(255, 99, 132, 1)',
+  //         'rgba(54, 162, 235, 1)',
+  //         'rgba(255, 206, 86, 1)',
+  //         'rgba(75, 192, 192, 1)',
+  //         'rgba(153, 102, 255, 1)',
+  //         'rgba(255, 159, 64, 1)',
+  //       ],
+  //       borderWidth: 1,
+  //     }],
+  //   });
+  // },
   created() {
     this.fetchDetails();
   },

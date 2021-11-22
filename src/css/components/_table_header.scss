@@ -1,0 +1,35 @@
+.th {
+  display: grid;
+  grid-column-gap: 10px;
+  grid-template-columns: repeat(10, fit-content(100%));
+  padding: 10px 0;
+  font-size: 12px;
+  border-top: 1px solid #eee;
+  border-bottom: 1px solid #eee;
+  margin: 10px 0;
+
+  .video_content {
+    width: 250px;
+  }
+
+  .author {
+    width: 200px;
+  }
+
+  .music {
+    width: 160px;
+  }
+
+  .growth {
+    width: 200px;
+  }
+
+  .views,
+  .likes,
+  .comments,
+  .shares,
+  .er,
+  .ts {
+    width: 46px;
+  }
+}
