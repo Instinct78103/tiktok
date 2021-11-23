@@ -1,6 +1,7 @@
 .filter {
   padding-top: 10px;
   padding-bottom: 10px;
+  background-color: #eee;
 
   > .container {
     display: grid;
@@ -91,6 +92,47 @@
       background-position: 50%;
       background-image: url('/icons/filter.svg');
     }
+  }
+
+}
+
+.filter-desktop {
+  padding: 20px 0;
+}
+
+.filter-desktop-wrap {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(2, 1fr);
+  grid-gap: 10px;
+  align-items: center;
+
+  > * {
+    max-width: 300px;
+  }
+
+  .toggle_private,
+  .sort_by,
+  .country_filter {
+    width: 150px;
+  }
+
+  .search{
+    width: 100%;
+    justify-self: center;
+  }
+
+  .search,
+  .sort_by {
+    justify-self: flex-start;
+  }
+
+  .toggle_private {
+    justify-self: flex-end;
+  }
+
+  .country_filter {
+    justify-self: flex-end;
   }
 
 }

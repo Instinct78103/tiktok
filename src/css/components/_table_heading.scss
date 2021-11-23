@@ -1,3 +1,10 @@
+.table_heading {
+  position: sticky;
+  top: 60px;
+  background: #fff;
+  z-index: 10;
+}
+
 .th {
   display: grid;
   grid-column-gap: 10px;

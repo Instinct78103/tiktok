@@ -2,7 +2,7 @@
   <q-page>
 
     <!--  FILTER  -->
-    <div class="filter" :style="isMobile ? {backgroundColor: '#eee'}: '' ">
+    <div class="filter" v-if="isMobile">
       <div class="container">
         <q-select standart v-model="model" :options="options" label="Sort By"
                   transition-show="flip-up"
@@ -20,16 +20,6 @@
             <q-icon class="fas fa-bookmark"></q-icon>
           </q-btn>
         </form>
-
-        <!--        <div class="select_div">-->
-        <!--          <div class="icon-arrows q-mr-xs"></div>-->
-        <!--          <select id="sortBy">-->
-        <!--            <option value="views">By Views</option>-->
-        <!--            <option value="likes">By Likes</option>-->
-        <!--            <option value="shares">By Shares</option>-->
-        <!--          </select>-->
-        <!--        </div>-->
-
         <div class="button-filter">
           <div class="icon-filter q-mr-xs"></div>
           <span>Filters</span>
@@ -37,6 +27,67 @@
 
       </div>
     </div>
+
+    <div class="filter-desktop" v-else>
+      <div class="container">
+        <div class="filter-desktop-wrap">
+          <div class="date_picker">
+            <q-btn icon="event" round color="primary">
+              <q-popup-proxy @before-show="updateProxy" cover transition-show="scale" transition-hide="scale">
+                <q-date v-model="proxyDate">
+                  <div class="row items-center justify-end q-gutter-sm">
+                    <q-btn label="Cancel" color="primary" flat v-close-popup/>
+                    <q-btn label="OK" color="primary" flat @click="save" v-close-popup/>
+                  </div>
+                </q-date>
+              </q-popup-proxy>
+            </q-btn>
+          </div>
+
+          <div style="max-width: 300px" class="search">
+            <q-input outlined v-model="text" label="Search"/>
+          </div>
+
+          <div class="toggle_private">
+            <q-toggle
+              v-model="value"
+              color="red"
+              label="Show Private"
+              left-label
+            />
+          </div>
+
+
+          <div class="prepared_range">
+            <q-btn-toggle
+              v-model="model"
+              toggle-color="primary"
+              :options="[
+        {label: '7 days', value: '7'},
+        {label: '14 days', value: '14'},
+        {label: '30 days', value: '30'}
+      ]"
+            />
+          </div>
+
+          <div style="max-width: 300px" class="sort_by">
+            <q-select standart v-model="model" :options="options" label="Sort By"
+                      transition-show="flip-up"
+                      transition-hide="flip-down"
+            ></q-select>
+          </div>
+
+          <div style="max-width: 300px" class="country_filter">
+            <q-select standart v-model="model" :options="countries" label="Filter By Country"
+                      transition-show="flip-up"
+                      transition-hide="flip-down"
+            ></q-select>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
 
     <!--  POSTS LIST  -->
     <div class="table_heading" v-if="!isMobile">
@@ -91,6 +142,12 @@ export default {
         'Views',
         'Shares',
       ],
+      countries: [
+        'USA',
+        'UK',
+        'Russia',
+        'Germany',
+      ],
     };
   },
   methods: {
@@ -138,6 +195,6 @@ export default {
 </script>
 <style lang="scss" scoped>
 @import 'src/css/components/filter';
-@import 'src/css/components/table_header';
+@import 'src/css/components/table_heading';
 
 </style>
