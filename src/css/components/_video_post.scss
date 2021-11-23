@@ -173,7 +173,7 @@
     .video_added {
       flex-direction: row;
       justify-content: center;
-      align-items: baseline;
+      align-items: center;
 
       .fa-clock,
       .time,
@@ -206,6 +206,10 @@
     .user_avatar {
       margin-right: 0;
     }
+
+    .user_name {
+      font-size: 12px;
+    }
   }
 
   .music_block {
@@ -231,13 +235,14 @@
 
   .social_block {
     display: grid;
-    grid-template-columns: repeat(6, 46px);
+    grid-template-columns: repeat(6, 36px);
     grid-column-gap: 10px;
 
     .social_item {
       margin: 0 !important;
 
       span {
+        font-size: 10px;
         color: #000;
       }
     }

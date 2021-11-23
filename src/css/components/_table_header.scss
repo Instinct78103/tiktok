@@ -1,7 +1,7 @@
 .th {
   display: grid;
   grid-column-gap: 10px;
-  grid-template-columns: repeat(10, fit-content(100%));
+  grid-template-columns: repeat(4, fit-content(100%)) repeat(6, 36px);
   padding: 10px 0;
   font-size: 12px;
   border-top: 1px solid #eee;
@@ -30,6 +30,6 @@
   .shares,
   .er,
   .ts {
-    width: 46px;
+    width: 36px;
   }
 }
