@@ -2,33 +2,106 @@
   <q-page>
 
     <!--  FILTER  -->
-    <div class="filter" v-if="isMobile">
+    <div class="filter_mobile" v-if="isMobile">
       <div class="container">
-        <q-select standart v-model="model" :options="options" label="Sort By"
-                  transition-show="flip-up"
-                  transition-hide="flip-down"
-        ></q-select>
-        <i class="q-icon fas fa-sort-amount-down q-ml-sm" v-if="sortBy && sortDirection === 'desc'"></i>
-        <i class="q-icon fas fa-sort-amount-down-alt q-ml-sm" v-if="sortBy && sortDirection === 'asc'"></i>
-        {{ model }}
-        <form @submit.prevent class="form_search">
-          <input type="text" placeholder="Search"/>
-          <q-btn color="primary" class="no-border-radius icon-search">
-            <q-icon class="fas fa-search"></q-icon>
-          </q-btn>
-          <q-btn class="no-border-radius icon-bookmark">
-            <q-icon class="fas fa-bookmark"></q-icon>
-          </q-btn>
-        </form>
-        <div class="button-filter">
-          <div class="icon-filter q-mr-xs"></div>
-          <span>Filters</span>
-        </div>
+        <div class="filter_mobile-wrap">
+          <div class="search">
+            <q-form @submit.prevent class="search_form">
+              <q-input class="search_input" square outlined v-model="text" bg-color="white" label="Search"/>
+              <div>
+                <q-btn icon="search" type="submit" color="primary"/>
+              </div>
+            </q-form>
+          </div>
+          <div class="sort_by">
+            <q-select standart
+                      v-model="model"
+                      :options="options"
+                      label="Sort By"
+                      transition-show="flip-up"
+                      transition-hide="flip-down"
+                      class="select_block"
+            ></q-select>
+            <i class="q-icon fas fa-sort-amount-down q-ml-sm" v-if="sortBy && sortDirection === 'desc'"></i>
+            <i class="q-icon fas fa-sort-amount-down-alt q-ml-sm" v-if="sortBy && sortDirection === 'asc'"></i>
+          </div>
+          <div class="button-filter">
+            <q-btn flat label="Filters" icon="fas fa-filter">
+              <q-menu>
+                <q-list dense style="min-width: 100px">
 
+                  <q-item clickable>
+                    <q-item-section>Country</q-item-section>
+                    <q-item-section side>
+                      <q-icon name="keyboard_arrow_right"/>
+                    </q-item-section>
+                    <q-menu auto-close anchor="top end" self="top start">
+                      <q-list>
+                        <q-item
+                          v-for="n in ['Germany', 'UK', 'USA',]"
+                          :key="n"
+                          dense
+                          clickable
+                        >
+                          <q-item-section>{{ n }}</q-item-section>
+
+                          <!--                          <q-menu auto-close anchor="top end" self="top start">-->
+                          <!--                            <q-list>-->
+                          <!--                              <q-item-->
+                          <!--                                v-for="n in 3"-->
+                          <!--                                :key="n"-->
+                          <!--                                dense-->
+                          <!--                                clickable-->
+                          <!--                              >-->
+                          <!--                                <q-item-section>3rd level Label</q-item-section>-->
+                          <!--                              </q-item>-->
+                          <!--                            </q-list>-->
+                          <!--                          </q-menu>-->
+                        </q-item>
+                      </q-list>
+                    </q-menu>
+                  </q-item>
+
+                  <q-item clickable>
+                    <q-item-section>Date</q-item-section>
+                    <q-item-section side>
+                      <q-icon name="keyboard_arrow_right"/>
+                    </q-item-section>
+                    <q-menu auto-close>
+                      <q-list>
+                        <q-item dense clickable>
+                          <q-item-section>7 days</q-item-section>
+                        </q-item>
+                        <q-item dense clickable>
+                          <q-item-section>14 days</q-item-section>
+                        </q-item>
+                        <q-item dense clickable>
+                          <q-item-section>30 days</q-item-section>
+                        </q-item>
+                        <q-item dense clickable>
+                          <q-item-section>Custom Range</q-item-section>
+                        </q-item>
+                      </q-list>
+                    </q-menu>
+                  </q-item>
+
+                  <q-item clickable v-close-popup>
+                    <q-toggle
+                      v-close-popup
+                      v-model="value"
+                      label="Show Private"
+                      left-label
+                    />
+                  </q-item>
+                </q-list>
+              </q-menu>
+            </q-btn>
+          </div>
+        </div>
       </div>
     </div>
 
-    <div class="filter-desktop" v-else>
+    <div class="filter_desktop" v-else>
       <div class="container">
         <div class="filter-desktop-wrap">
           <div class="date_picker">
@@ -44,7 +117,7 @@
             </q-btn>
           </div>
 
-          <div style="max-width: 300px" class="search">
+          <div class="search">
             <q-input outlined v-model="text" label="Search"/>
           </div>
 
@@ -70,14 +143,14 @@
             />
           </div>
 
-          <div style="max-width: 300px" class="sort_by">
+          <div class="sort_by">
             <q-select standart v-model="model" :options="options" label="Sort By"
                       transition-show="flip-up"
                       transition-hide="flip-down"
             ></q-select>
           </div>
 
-          <div style="max-width: 300px" class="country_filter">
+          <div class="country_filter">
             <q-select standart v-model="model" :options="countries" label="Filter By Country"
                       transition-show="flip-up"
                       transition-hide="flip-down"
@@ -124,6 +197,7 @@ export default {
   setup() {
     return {
       model: ref(''),
+      value: ref(false),
     };
   },
 

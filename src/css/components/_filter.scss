@@ -1,48 +1,53 @@
-.filter {
+.filter_mobile {
   padding-top: 10px;
   padding-bottom: 10px;
   background-color: #eee;
 
-  > .container {
+  .filter_mobile-wrap {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: [start] 1fr [search] 1fr [filter] 1fr [end];
     grid-template-rows: repeat(2, fit-content(100%));
-    grid-row-gap: 20px;
+    grid-row-gap: 10px;
+    align-items: center;
   }
 
 
-  .form_search {
+  .search {
+    grid-column: start / end;
+
+    .search_form {
+      display: flex;
+      height: 100%;
+      align-items: stretch;
+
+      .search_input {
+        width: 100%;
+      }
+
+      button {
+        height: 100%;
+      }
+    }
+  }
+
+  .sort_by {
     display: flex;
-    margin: 0 auto;
-    width: 100%;
-    grid-column: 1 / -1;
-    grid-row: 1 / span 1;
+    grid-column: start / search;
+    align-items: center;
 
-    input {
-      width: 100%;
-      border: 1px solid rgba(0, 0, 0, 0.35);
-      padding: 10px;
-      font-size: 16px;
-      outline: none;
+    .select_block {
+      width: 100px;
     }
 
-    .icon-search {
-      &:before {
-        box-shadow: none;
-      }
-    }
-
-    .icon-bookmark {
-      width: 16px;
-      height: 16px;
-      margin-left: 10px;
-      align-self: center;
-
-      &:before {
-        box-shadow: none;
-      }
+    .fas[class *='fa-sort'] {
+      font-size: 2em;
     }
   }
+
+  .button-filter {
+    grid-column: filter / end;
+  }
+
 
   .select_div {
     position: relative;
@@ -84,6 +89,7 @@
     justify-content: flex-end;
     height: 16px;
     line-height: 1;
+    width: 150px;
 
     .icon-filter {
       display: inline-block;
@@ -96,7 +102,7 @@
 
 }
 
-.filter-desktop {
+.filter_desktop {
   padding: 20px 0;
 }
 
@@ -117,7 +123,7 @@
     width: 150px;
   }
 
-  .search{
+  .search {
     width: 100%;
     justify-self: center;
   }
