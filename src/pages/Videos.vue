@@ -22,8 +22,10 @@
                       transition-hide="flip-down"
                       class="select_block"
             ></q-select>
-            <i class="q-icon fas fa-sort-amount-down q-ml-sm" v-if="sortBy && sortDirection === 'desc'"></i>
-            <i class="q-icon fas fa-sort-amount-down-alt q-ml-sm" v-if="sortBy && sortDirection === 'asc'"></i>
+            <i class="q-icon fas q-ml-sm"
+               :class="sortDirection === 'desc' ? 'fa-sort-amount-down': 'fa-sort-amount-down-alt'"
+               @click="sortDirection = (sortDirection === 'desc') ? 'asc' : 'desc'"
+            ></i>
           </div>
           <div class="button-filter">
             <q-btn flat label="Filters" icon="fas fa-filter">
@@ -31,35 +33,33 @@
                 <q-list dense style="min-width: 100px">
 
                   <q-item clickable>
-                    <q-item-section>Country</q-item-section>
-                    <q-item-section side>
-                      <q-icon name="keyboard_arrow_right"/>
+                    <!--                    <q-item-section>Country</q-item-section>-->
+                    <!--                    <q-item-section side>-->
+                    <!--                      <q-icon name="keyboard_arrow_right"/>-->
+                    <!--                    </q-item-section>-->
+                    <!--                    <q-menu auto-close anchor="top end" self="top start">-->
+                    <q-item-section>
+                      <q-select standart
+                                v-model="model"
+                                :options="countries"
+                                label="Country"
+                                transition-show="flip-up"
+                                transition-hide="flip-down"
+                                class="select_block"
+                                behavior="dialog"
+                      ></q-select>
                     </q-item-section>
-                    <q-menu auto-close anchor="top end" self="top start">
-                      <q-list>
-                        <q-item
-                          v-for="n in ['Germany', 'UK', 'USA',]"
-                          :key="n"
-                          dense
-                          clickable
-                        >
-                          <q-item-section>{{ n }}</q-item-section>
-
-                          <!--                          <q-menu auto-close anchor="top end" self="top start">-->
-                          <!--                            <q-list>-->
-                          <!--                              <q-item-->
-                          <!--                                v-for="n in 3"-->
-                          <!--                                :key="n"-->
-                          <!--                                dense-->
-                          <!--                                clickable-->
-                          <!--                              >-->
-                          <!--                                <q-item-section>3rd level Label</q-item-section>-->
-                          <!--                              </q-item>-->
-                          <!--                            </q-list>-->
-                          <!--                          </q-menu>-->
-                        </q-item>
-                      </q-list>
-                    </q-menu>
+                    <!--                      <q-list>-->
+                    <!--                        <q-item-->
+                    <!--                          v-for="n in ['Germany', 'UK', 'USA',]"-->
+                    <!--                          :key="n"-->
+                    <!--                          dense-->
+                    <!--                          clickable-->
+                    <!--                        >-->
+                    <!--                          <q-item-section>{{ n }}</q-item-section>-->
+                    <!--                        </q-item>-->
+                    <!--                      </q-list>-->
+                    <!--                    </q-menu>-->
                   </q-item>
 
                   <q-item clickable>
@@ -85,17 +85,43 @@
                     </q-menu>
                   </q-item>
 
-                  <q-item clickable v-close-popup>
+                  <q-item clickable>
                     <q-toggle
-                      v-close-popup
                       v-model="value"
                       label="Show Private"
                       left-label
                     />
                   </q-item>
+                  <q-separator/>
+                  <q-item clickable v-close-popup>
+                    <q-item-section>Quit</q-item-section>
+                  </q-item>
                 </q-list>
               </q-menu>
             </q-btn>
+            <!--            Filters button -- end -->
+
+          </div>
+          <div class="button-filter-2">
+            <q-btn label="Filters" flat @click="dialog = true"></q-btn>
+            <q-dialog v-model="dialog">
+              <q-card>
+                <q-card-section class="row items-center q-gutter-sm">
+                  <q-btn no-caps label="Country" flat>
+                    <q-menu>
+                      <q-list dense style="min-width: 100px">
+                        <q-item clickable v-close-popup="2" v-for="n in countries" :key="n">
+                          <q-item-section>{{ n }}</q-item-section>
+                        </q-item>
+<!--                        <q-item clickable v-close-popup="2">-->
+<!--                          <q-item-section>Quit</q-item-section>-->
+<!--                        </q-item>-->
+                      </q-list>
+                    </q-menu>
+                  </q-btn>
+                </q-card-section>
+              </q-card>
+            </q-dialog>
           </div>
         </div>
       </div>
@@ -198,6 +224,8 @@ export default {
     return {
       model: ref(''),
       value: ref(false),
+      dialog: ref(false),
+      text: ref(''),
     };
   },
 
