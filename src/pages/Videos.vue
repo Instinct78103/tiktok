@@ -28,98 +28,79 @@
             ></i>
           </div>
           <div class="button-filter">
-            <q-btn flat label="Filters" icon="fas fa-filter">
-              <q-menu>
-                <q-list dense style="min-width: 100px">
-
-                  <q-item clickable>
-                    <!--                    <q-item-section>Country</q-item-section>-->
-                    <!--                    <q-item-section side>-->
-                    <!--                      <q-icon name="keyboard_arrow_right"/>-->
-                    <!--                    </q-item-section>-->
-                    <!--                    <q-menu auto-close anchor="top end" self="top start">-->
+            <q-btn label="Filters" flat @click="dialog = true" icon="fas fa-filter"></q-btn>
+            <q-dialog v-model="dialog">
+              <q-card style="min-width: 300px">
+                <q-list>
+                  <q-item>
                     <q-item-section>
-                      <q-select standart
-                                v-model="model"
-                                :options="countries"
-                                label="Country"
-                                transition-show="flip-up"
-                                transition-hide="flip-down"
-                                class="select_block"
-                                behavior="dialog"
-                      ></q-select>
-                    </q-item-section>
-                    <!--                      <q-list>-->
-                    <!--                        <q-item-->
-                    <!--                          v-for="n in ['Germany', 'UK', 'USA',]"-->
-                    <!--                          :key="n"-->
-                    <!--                          dense-->
-                    <!--                          clickable-->
-                    <!--                        >-->
-                    <!--                          <q-item-section>{{ n }}</q-item-section>-->
-                    <!--                        </q-item>-->
-                    <!--                      </q-list>-->
-                    <!--                    </q-menu>-->
-                  </q-item>
+                      <q-btn align="left" flat label="Country" icon="flag" @click="dialog2 = true"/>
 
-                  <q-item clickable>
-                    <q-item-section>Date</q-item-section>
-                    <q-item-section side>
-                      <q-icon name="keyboard_arrow_right"/>
-                    </q-item-section>
-                    <q-menu auto-close>
-                      <q-list>
-                        <q-item dense clickable>
-                          <q-item-section>7 days</q-item-section>
-                        </q-item>
-                        <q-item dense clickable>
-                          <q-item-section>14 days</q-item-section>
-                        </q-item>
-                        <q-item dense clickable>
-                          <q-item-section>30 days</q-item-section>
-                        </q-item>
-                        <q-item dense clickable>
-                          <q-item-section>Custom Range</q-item-section>
-                        </q-item>
-                      </q-list>
-                    </q-menu>
-                  </q-item>
+                      <q-dialog v-model="dialog2">
+                        <q-card style="min-width: 300px">
+                          <q-list>
+                            <q-item v-for="n in countries" :key="n">
+                              <q-item-section>
+                                <q-btn align="left" :label="n" flat v-close-popup/>
+                              </q-item-section>
+                            </q-item>
+                            <q-separator/>
+                            <q-item>
+                              <q-item-section>
+                                <q-btn flat label="Back" icon="fas fa-arrow-left" v-close-popup/>
+                              </q-item-section>
+                            </q-item>
+                          </q-list>
+                        </q-card>
+                      </q-dialog>
 
-                  <q-item clickable>
-                    <q-toggle
-                      v-model="value"
-                      label="Show Private"
-                      left-label
-                    />
+                    </q-item-section>
+                  </q-item>
+                  <q-item>
+                    <q-item-section>
+                      <q-btn align="left" flat label="Date" icon="event" @click="dialog3 = true"/>
+
+                      <q-dialog v-model="dialog3">
+                        <q-card style="min-width: 300px">
+                          <q-list>
+                            <q-item v-for="n in [
+                              {label: '7 days', value: '7'},
+                              {label: '14 days', value: '14'},
+                              {label: '30 days', value: '30'}
+                            ]" :key="n.label" v-close-popup>
+                              <q-item-section>
+                                <q-btn align="left" :label="n.label" flat/>
+                              </q-item-section>
+                            </q-item>
+                            <q-item>
+                              <q-item-section>
+                                <q-btn flat align="left" icon="fas fa-calendar-day" label="Custom Range" />
+                              </q-item-section>
+                            </q-item>
+                            <q-separator/>
+                            <q-item>
+                              <q-item-section>
+                                <q-btn flat label="Back" icon="fas fa-arrow-left" v-close-popup/>
+                              </q-item-section>
+                            </q-item>
+                          </q-list>
+                        </q-card>
+                      </q-dialog>
+
+                    </q-item-section>
+                  </q-item>
+                  <q-item>
+                    <q-item-section>
+                      <q-toggle class="show-private" label="Show Private" left-label v-model="value"/>
+                    </q-item-section>
                   </q-item>
                   <q-separator/>
-                  <q-item clickable v-close-popup>
-                    <q-item-section>Quit</q-item-section>
+                  <q-item>
+                    <q-item-section>
+                      <q-btn flat label="Quit" v-close-popup/>
+                    </q-item-section>
                   </q-item>
                 </q-list>
-              </q-menu>
-            </q-btn>
-            <!--            Filters button -- end -->
-
-          </div>
-          <div class="button-filter-2">
-            <q-btn label="Filters" flat @click="dialog = true"></q-btn>
-            <q-dialog v-model="dialog">
-              <q-card>
-                <q-card-section class="row items-center q-gutter-sm">
-                  <q-btn no-caps label="Country" flat>
-                    <q-menu>
-                      <q-list dense style="min-width: 100px">
-                        <q-item clickable v-close-popup="2" v-for="n in countries" :key="n">
-                          <q-item-section>{{ n }}</q-item-section>
-                        </q-item>
-<!--                        <q-item clickable v-close-popup="2">-->
-<!--                          <q-item-section>Quit</q-item-section>-->
-<!--                        </q-item>-->
-                      </q-list>
-                    </q-menu>
-                  </q-btn>
-                </q-card-section>
               </q-card>
             </q-dialog>
           </div>
@@ -225,6 +206,8 @@ export default {
       model: ref(''),
       value: ref(false),
       dialog: ref(false),
+      dialog2: ref(false),
+      dialog3: ref(false),
       text: ref(''),
     };
   },
@@ -249,6 +232,9 @@ export default {
         'UK',
         'Russia',
         'Germany',
+        'Germanyqwe',
+        'Germanydc',
+        'Germanydv',
       ],
     };
   },

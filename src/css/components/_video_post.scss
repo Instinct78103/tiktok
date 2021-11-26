@@ -65,6 +65,10 @@
 .post_title {
   grid-area: title;
   font-size: 16px;
+
+  a {
+    color: #000;
+  }
 }
 
 .tiktok_buttons {
