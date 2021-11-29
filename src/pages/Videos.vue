@@ -1,22 +1,23 @@
 <template>
   <q-page>
 
-    <!--  FILTER  -->
+    <!--  FILTER-MOBILE  -->
     <div class="filter_mobile" v-if="isMobile">
       <div class="container">
         <div class="filter_mobile-wrap">
           <div class="search">
             <q-form @submit.prevent class="search_form">
-              <q-input class="search_input" square outlined v-model="text" bg-color="white" label="Search"/>
+              <q-input class="search_input" square outlined v-model="search_text" bg-color="white" label="Search"/>
               <div>
                 <q-btn icon="search" type="submit" color="primary"/>
               </div>
             </q-form>
           </div>
+
           <div class="sort_by">
             <q-select standart
-                      v-model="model"
-                      :options="options"
+                      v-model="sort_by_item"
+                      :options="sort_by"
                       label="Sort By"
                       transition-show="flip-up"
                       transition-hide="flip-down"
@@ -27,87 +28,14 @@
                @click="sortDirection = (sortDirection === 'desc') ? 'asc' : 'desc'"
             ></i>
           </div>
-          <div class="button-filter">
-            <q-btn label="Filters" flat @click="dialog = true" icon="fas fa-filter"></q-btn>
-            <q-dialog v-model="dialog">
-              <q-card style="min-width: 300px">
-                <q-list>
-                  <q-item>
-                    <q-item-section>
-                      <q-btn align="left" flat label="Country" icon="flag" @click="dialog2 = true"/>
 
-                      <q-dialog v-model="dialog2">
-                        <q-card style="min-width: 300px">
-                          <q-list>
-                            <q-item v-for="n in countries" :key="n">
-                              <q-item-section>
-                                <q-btn align="left" :label="n" flat v-close-popup/>
-                              </q-item-section>
-                            </q-item>
-                            <q-separator/>
-                            <q-item>
-                              <q-item-section>
-                                <q-btn flat label="Back" icon="fas fa-arrow-left" v-close-popup/>
-                              </q-item-section>
-                            </q-item>
-                          </q-list>
-                        </q-card>
-                      </q-dialog>
+          <ButtonFilters></ButtonFilters>
 
-                    </q-item-section>
-                  </q-item>
-                  <q-item>
-                    <q-item-section>
-                      <q-btn align="left" flat label="Date" icon="event" @click="dialog3 = true"/>
-
-                      <q-dialog v-model="dialog3">
-                        <q-card style="min-width: 300px">
-                          <q-list>
-                            <q-item v-for="n in [
-                              {label: '7 days', value: '7'},
-                              {label: '14 days', value: '14'},
-                              {label: '30 days', value: '30'}
-                            ]" :key="n.label" v-close-popup>
-                              <q-item-section>
-                                <q-btn align="left" :label="n.label" flat/>
-                              </q-item-section>
-                            </q-item>
-                            <q-item>
-                              <q-item-section>
-                                <q-btn flat align="left" icon="fas fa-calendar-day" label="Custom Range" />
-                              </q-item-section>
-                            </q-item>
-                            <q-separator/>
-                            <q-item>
-                              <q-item-section>
-                                <q-btn flat label="Back" icon="fas fa-arrow-left" v-close-popup/>
-                              </q-item-section>
-                            </q-item>
-                          </q-list>
-                        </q-card>
-                      </q-dialog>
-
-                    </q-item-section>
-                  </q-item>
-                  <q-item>
-                    <q-item-section>
-                      <q-toggle class="show-private" label="Show Private" left-label v-model="value"/>
-                    </q-item-section>
-                  </q-item>
-                  <q-separator/>
-                  <q-item>
-                    <q-item-section>
-                      <q-btn flat label="Quit" v-close-popup/>
-                    </q-item-section>
-                  </q-item>
-                </q-list>
-              </q-card>
-            </q-dialog>
-          </div>
         </div>
       </div>
     </div>
 
+    <!--  FILTER-DESKTOP  -->
     <div class="filter_desktop" v-else>
       <div class="container">
         <div class="filter-desktop-wrap">
@@ -125,12 +53,12 @@
           </div>
 
           <div class="search">
-            <q-input outlined v-model="text" label="Search"/>
+            <q-input outlined v-model="search_text" label="Search"/>
           </div>
 
           <div class="toggle_private">
             <q-toggle
-              v-model="value"
+              v-model="show_private"
               color="red"
               label="Show Private"
               left-label
@@ -140,7 +68,7 @@
 
           <div class="prepared_range">
             <q-btn-toggle
-              v-model="model"
+              v-model="date_item"
               toggle-color="primary"
               :options="[
         {label: '7 days', value: '7'},
@@ -151,14 +79,14 @@
           </div>
 
           <div class="sort_by">
-            <q-select standart v-model="model" :options="options" label="Sort By"
+            <q-select standart v-model="sort_by_item" :options="sort_by" label="Sort By"
                       transition-show="flip-up"
                       transition-hide="flip-down"
             ></q-select>
           </div>
 
           <div class="country_filter">
-            <q-select standart v-model="model" :options="countries" label="Filter By Country"
+            <q-select standart v-model="countries_item" :options="countries" label="Filter By Country"
                       transition-show="flip-up"
                       transition-hide="flip-down"
             ></q-select>
@@ -196,33 +124,30 @@
 </template>
 
 <script>
-import FilterMobile from 'src/components/FilterMobile.vue';
+import ButtonFilters from 'components/ButtonFilters';
 import {ref} from 'vue';
 import VideoPost from 'components/VideoPost';
 
 export default {
   setup() {
     return {
-      model: ref(''),
-      value: ref(false),
-      dialog: ref(false),
-      dialog2: ref(false),
-      dialog3: ref(false),
-      text: ref(''),
+      sort_by_item: ref(''),
+      search_text: ref(''),
+      countries_item: ref(''),
     };
   },
 
   components: {
-    FilterMobile,
     VideoPost,
+    ButtonFilters
   },
   data() {
     return {
       innerWidth: 0,
       search: '',
-      sortBy: true,
+      sort_is_on: true,
       sortDirection: 'desc',
-      options: [
+      sort_by: [
         'Likes',
         'Views',
         'Shares',
@@ -240,10 +165,10 @@ export default {
   },
   methods: {
     sort(e) {
-      if (e.target.dataset.filter === this.sortBy) {
+      if (e.target.dataset.filter === this.sort_is_on) {
         this.sortDirection = this.sortDirection === 'asc' ? 'desc' : 'asc';
       }
-      this.sortBy = e.target.dataset.filter;
+      this.sort_is_on = e.target.dataset.filter;
     },
   },
   created() {
@@ -268,10 +193,10 @@ export default {
             item.name.toLowerCase().includes(this.search.toLowerCase()),
           )
           .sort((a, b) => {
-            if (a[this.sortBy] === b[this.sortBy]) return 0;
-            if (a[this.sortBy] > b[this.sortBy])
+            if (a[this.sort_is_on] === b[this.sort_is_on]) return 0;
+            if (a[this.sort_is_on] > b[this.sort_is_on])
               return this.sortDirection === 'asc' ? 1 : -1;
-            if (a[this.sortBy] < b[this.sortBy])
+            if (a[this.sort_is_on] < b[this.sort_is_on])
               return this.sortDirection === 'asc' ? -1 : 1;
           });
       } else {
