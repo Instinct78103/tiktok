@@ -1,6 +1,7 @@
 {
   "recommendations": [
-    "octref.vetur"
+    "octref.vetur",
+    "apollographql.vscode-apollo"
   ],
   "unwantedRecommendations": [
     "hookyqr.beautify",

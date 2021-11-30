@@ -19,7 +19,9 @@ module.exports = configure(function (ctx) {
     // app boot file (/src/boot)
     // --> boot files are part of "main.js"
     // https://quasar.dev/quasar-cli/boot-files
-    boot: [],
+    boot: [
+      'apollo.js'
+    ],
 
     // https://quasar.dev/quasar-cli/quasar-conf-js#Property%3A-css
     css: [
@@ -67,23 +69,23 @@ module.exports = configure(function (ctx) {
       //
       // },
 
-      chainWebpack(chain, {isServer, isClient}) {
-        chain.module.rule('vue')
-          .use('vue-loader')
-          .loader('vue-loader')
-          .tap(options => {
-            options.transpileOptions = {
-              transforms: {
-                dangerousTaggedTemplateString: true,
-              },
-            };
-            return options;
-          });
-        chain.module.rule('gql')
-          .test(/\.(graphql|gql)$/)
-          .use('graphql-tag/loader')
-          .loader('graphql-tag/loader');
-      },
+      // chainWebpack(chain, {isServer, isClient}) {
+      //   chain.module.rule('vue')
+      //     .use('vue-loader')
+      //     .loader('vue-loader')
+      //     .tap(options => {
+      //       options.transpileOptions = {
+      //         transforms: {
+      //           dangerousTaggedTemplateString: true,
+      //         },
+      //       };
+      //       return options;
+      //     });
+      //   chain.module.rule('gql')
+      //     .test(/\.(graphql|gql)$/)
+      //     .use('graphql-tag/loader')
+      //     .loader('graphql-tag/loader');
+      // },
 
     },
 

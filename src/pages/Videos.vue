@@ -124,8 +124,11 @@
 </template>
 
 <script>
+import {ref, watch} from 'vue';
+import {useQuery} from '@vue/apollo-composable';
+import gql from 'graphql-tag';
+
 import ButtonFilters from 'components/ButtonFilters';
-import {ref} from 'vue';
 import VideoPost from 'components/VideoPost';
 
 export default {
@@ -139,7 +142,7 @@ export default {
 
   components: {
     VideoPost,
-    ButtonFilters
+    ButtonFilters,
   },
   data() {
     return {
