@@ -89,8 +89,8 @@
 
         <div v-if="loading">Loading...</div>
         <div v-else-if="error">Error: {{ error.message }}</div>
-        <div v-else-if="result && result.post">
-          <div>id: {{ result.video.id }}</div>
+        <div v-else-if="result && result.video">
+          <div>{{ result.video }}</div>
         </div>
 
   </div>
