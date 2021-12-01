@@ -1,6 +1,7 @@
 {
   "recommendations": [
     "octref.vetur",
+    "apollographql.vscode-apollo",
     "apollographql.vscode-apollo"
   ],
   "unwantedRecommendations": [
