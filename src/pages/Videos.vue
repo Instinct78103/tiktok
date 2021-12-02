@@ -116,7 +116,9 @@
     </div>
     <div class="posts-list">
       <div class="container">
-        <video-post v-for="post in searching" :key="post.name" :post="post" :is-mobile="isMobile"></video-post>
+        <video-post v-for="item in videoList" :key="item.id" :post="item" :is-mobile="isMobile"></video-post>
+
+<!--        <video-post v-for="post in searching" :key="post.name" :post="post" :is-mobile="isMobile"></video-post>-->
       </div>
     </div>
 
@@ -125,15 +127,22 @@
 
 <script>
 import {ref, watch} from 'vue';
-import {useQuery} from '@vue/apollo-composable';
+import {useQuery, useResult} from '@vue/apollo-composable';
 import gql from 'graphql-tag';
 
 import ButtonFilters from 'components/ButtonFilters';
 import VideoPost from 'components/VideoPost';
+import {getTimeOnly} from 'src/helper'
+import videoListQuery from '../graphql/videoList.query.gql'
 
 export default {
   setup() {
+
+    const {result} = useQuery(videoListQuery)
+    const videoList = useResult(result, null, data => data.video) // if query fail we'll get null
+
     return {
+      videoList, //without using UseResult we would return `result`
       sort_by_item: ref(''),
       search_text: ref(''),
       countries_item: ref(''),
@@ -167,6 +176,7 @@ export default {
     };
   },
   methods: {
+    getTimeOnly,
     sort(e) {
       if (e.target.dataset.filter === this.sort_is_on) {
         this.sortDirection = this.sortDirection === 'asc' ? 'desc' : 'asc';
@@ -175,7 +185,7 @@ export default {
     },
   },
   created() {
-    this.$store.dispatch('posts/fetchPosts');
+    // this.$store.dispatch('posts/fetchPosts');
 
     this.innerWidth = window.innerWidth;
     window.addEventListener('resize', () => {
@@ -186,26 +196,26 @@ export default {
     isMobile() {
       return this.innerWidth < 1200;
     },
-    getPosts() {
-      return this.$store.getters['posts/get_posts'];
-    },
-    searching() {
-      if (this.sort) {
-        return this.getPosts
-          .filter((item) =>
-            item.name.toLowerCase().includes(this.search.toLowerCase()),
-          )
-          .sort((a, b) => {
-            if (a[this.sort_is_on] === b[this.sort_is_on]) return 0;
-            if (a[this.sort_is_on] > b[this.sort_is_on])
-              return this.sortDirection === 'asc' ? 1 : -1;
-            if (a[this.sort_is_on] < b[this.sort_is_on])
-              return this.sortDirection === 'asc' ? -1 : 1;
-          });
-      } else {
-        return this.getPosts;
-      }
-    },
+    // getPosts() {
+    //   return this.$store.getters['posts/get_posts'];
+    // },
+    // searching() {
+    //   if (this.sort) {
+    //     return this.getPosts
+    //       .filter((item) =>
+    //         item.name.toLowerCase().includes(this.search.toLowerCase()),
+    //       )
+    //       .sort((a, b) => {
+    //         if (a[this.sort_is_on] === b[this.sort_is_on]) return 0;
+    //         if (a[this.sort_is_on] > b[this.sort_is_on])
+    //           return this.sortDirection === 'asc' ? 1 : -1;
+    //         if (a[this.sort_is_on] < b[this.sort_is_on])
+    //           return this.sortDirection === 'asc' ? -1 : 1;
+    //       });
+    //   } else {
+    //     return this.getPosts;
+    //   }
+    // },
   },
 };
 </script>

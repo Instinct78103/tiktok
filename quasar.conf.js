@@ -20,7 +20,7 @@ module.exports = configure(function (ctx) {
     // --> boot files are part of "main.js"
     // https://quasar.dev/quasar-cli/boot-files
     boot: [
-      'apollo.js'
+      'apollo.js',
     ],
 
     // https://quasar.dev/quasar-cli/quasar-conf-js#Property%3A-css
@@ -86,6 +86,15 @@ module.exports = configure(function (ctx) {
       //     .use('graphql-tag/loader')
       //     .loader('graphql-tag/loader');
       // },
+
+      chainWebpack: config => {
+        config.module
+          .rule('graphql')
+          .test(/\.(graphql|gql)$/)
+          .use('graphql-tag/loader')
+          .loader('graphql-tag/loader')
+          .end();
+      },
 
     },
 

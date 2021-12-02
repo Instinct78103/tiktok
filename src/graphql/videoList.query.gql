@@ -1,0 +1,38 @@
+query videoList {
+  video(limit:10, order: "playCount desc"){
+    id
+
+    video_url #video_url
+    cover_url #video_image
+    createTime(format: "c") #createTime
+    desc #title
+
+    author{
+      profile_url #tiktok_profile
+      cover_url #avatar
+      uniqueId #tiktok_name
+      region
+    }
+
+    music{
+      playUrl #tiktok_url
+      cover_url
+      title
+      music_url #download
+    }
+
+#    graph(days: 2, total: 10){
+#      labels
+#      diff
+#      ds1
+#      ds2
+#    }
+
+    playCount #views
+    diggCount #likes
+    commentCount #comments
+    shareCount #shares
+    engagement #ER
+    trending #TS
+  }
+}
