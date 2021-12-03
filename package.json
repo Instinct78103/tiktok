@@ -7,7 +7,7 @@
   "private": true,
   "scripts": {
     "test": "echo \"No test specified\" && exit 0",
-    "postinstall": "export NODE_OPTIONS=--openssl-legacy-provider && quasar build",
+    "postinstall": "quasar build",
     "start": "node server.js"
   },
   "dependencies": {
