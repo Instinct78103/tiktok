@@ -14,7 +14,7 @@ export function getTimeOnly(date) {
   return h + ':' + m;
 }
 
-export function timeSince(date) {
+export function timeAgo(date) {
   const intervals = [
     {label: 'y', seconds: 31536000},
     {label: 'm', seconds: 2592000},

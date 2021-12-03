@@ -143,7 +143,7 @@
     grid-template-columns: 30px fit-content(100%) 30px;
     grid-template-rows: 30px;
 
-    .music_title{
+    .music_title {
       max-height: 30px;
       overflow: hidden;
       white-space: nowrap;
@@ -186,8 +186,12 @@
     }
 
     .video_frame {
-      height: 60px;
+      height: 100px;
       position: relative;
+
+      img {
+        width: 100%;
+      }
     }
 
     .video_added {
