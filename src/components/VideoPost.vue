@@ -31,21 +31,21 @@
       <div class="social_block flex">
         <div class="social_item flex column items-center">
           <q-icon class="fas fa-heart"></q-icon>
-          <span>{{dFormat(post.diggCount, 1)}}</span>
+          <span>{{numFormat(post.diggCount, 1)}}</span>
         </div>
         <div class="social_item middle flex column items-center">
           <q-icon class="fas fa-share"></q-icon>
-          <span>{{dFormat(post.shareCount, 1)}}</span>
+          <span>{{numFormat(post.shareCount, 1)}}</span>
         </div>
         <div class="social_item flex column items-center">
           <q-icon class="fas fa-eye"></q-icon>
-          <span>{{ dFormat(post.playCount, 1) }}</span>
+          <span>{{ numFormat(post.playCount, 1) }}</span>
         </div>
       </div>
 
       <div class="user_block flex items-center">
         <img class="user_avatar" :src="post.author.cover_url" :alt="post.author.uniqueId"/>
-        <span class="user_name">{{ post.name }}</span>
+        <span class="user_name">{{ post.author.uniqueId }}</span>
       </div>
 
       <div class="music_block flex items-center">
@@ -128,7 +128,7 @@
 
 <script>
 import Chart from 'components/Chart';
-import {getTimeOnly, timeSince, dFormat} from 'src/helper';
+import {getTimeOnly, timeSince, numFormat} from 'src/helper';
 import {ref} from 'vue';
 
 export default {
@@ -136,7 +136,7 @@ export default {
   methods: {
     getTimeOnly,
     timeSince,
-    dFormat,
+    numFormat,
     togglePlay() {
       this.isPlaying = !this.isPlaying;
       const a = this.$refs.audioElem;

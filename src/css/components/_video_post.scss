@@ -115,17 +115,21 @@
 .user {
   &_block {
     grid-area: user_block;
+    display: grid;
+    grid-column-gap: 10px;
+    grid-template-columns: 30px fit-content(100%) 30px;
+    grid-template-rows: fit-content(100%);
   }
 
   &_avatar {
     width: 30px;
     height: 30px;
-    margin-right: 10px;
-    border: 1px solid #eee;
   }
 
   &_name {
-
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
 }
@@ -134,13 +138,24 @@
 
   &_block {
     grid-area: music_block;
+    display: grid;
+    grid-column-gap: 10px;
+    grid-template-columns: 30px fit-content(100%) 30px;
+    grid-template-rows: 30px;
+
+    .music_title{
+      max-height: 30px;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
   }
 
   &_frame {
     width: 30px;
     height: 30px;
-    margin-right: 10px;
   }
+
 
 }
 
