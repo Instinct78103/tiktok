@@ -15,6 +15,7 @@ query videoList {
     }
 
     music{
+      tiktok_id
       playUrl #tiktok_url
       cover_url
       title

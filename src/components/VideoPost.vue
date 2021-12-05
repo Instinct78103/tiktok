@@ -1,6 +1,5 @@
 <template>
   <div class="video_post_mobile" v-if="isMobile" :data-region="post.author.region.toLowerCase()">
-
     <div class="post_title">
       <router-link :to="{ name: 'VideoDetails', params: { id: post.id } }">{{ post.desc }}</router-link>
     </div>
@@ -49,8 +48,9 @@
     <div class="music_block flex items-center">
       <img :src="post.music.cover_url" alt="" class="music_frame">
       <span class="music_title">{{ post.music.title }}</span>
-      <q-btn size="10px" round class="grey-button" :icon="isPlaying ? 'fas fa-pause' : 'fas fa-play'"
-             @click="playPause"/>
+      <q-btn size="10px" round class="play grey-button" :data-track="post.music.playUrl"
+             :icon="isPlaying ? 'fas fa-pause' : 'fas fa-play'"
+             @click="$emit('triggerParent', $event)"/>
       <audio
         controls
         :ref="`audioElem-${post.music.title}`"
@@ -60,6 +60,7 @@
     </div>
 
   </div>
+
 
   <div class="video_post_desktop" :data-region="post.author.region.toLowerCase()" v-else>
     <div class="video_block">
@@ -91,7 +92,7 @@
       <q-btn size="10px" round type="a" :href="post.music.music_url" class="grey-button" icon="fas fa-music"
              target="_blank"/>
       <img :src="post.music.cover_url" alt="" class="music_frame">
-      <span class="music_title">{{post.music.title}}</span>
+      <span class="music_title">{{ post.music.title }}</span>
       <q-btn size="10px" round class="grey-button" :icon="isPlaying ? 'fas fa-pause' : 'fas fa-play'"
              @click="playPause"/>
       <audio
@@ -170,8 +171,8 @@ export default {
   props: {
     post: Object,
     isMobile: Boolean,
+    mutedTracks: Array,
   },
-
   setup() {
     return {
       isPlaying: ref(false),

@@ -116,9 +116,12 @@
     </div>
     <div class="posts-list">
       <div class="container">
-        <video-post v-for="item in videoList" :key="item.id" :post="item" :is-mobile="isMobile"></video-post>
+        <pre>TrackPlaying: {{this.currentTrack}}</pre>
+        <pre>TracksMuted: {{mutedTracks}}</pre>
+        <video-post :mutedTracks="mutedTracks" v-for="item in videoList" :key="item.id" :post="item" :is-mobile="isMobile"
+                    :data-test="item" @triggerParent="playMusic($event)"></video-post>
 
-<!--        <video-post v-for="post in searching" :key="post.name" :post="post" :is-mobile="isMobile"></video-post>-->
+        <!--        <video-post v-for="post in searching" :key="post.name" :post="post" :is-mobile="isMobile"></video-post>-->
       </div>
     </div>
 
@@ -132,17 +135,18 @@ import gql from 'graphql-tag';
 
 import ButtonFilters from 'components/ButtonFilters';
 import VideoPost from 'components/VideoPost';
-import {getTimeOnly} from 'src/helper'
-import videoListQuery from '../graphql/videoList.query.gql'
+import {getTimeOnly} from 'src/helper';
+import videoListQuery from '../graphql/videoList.query.gql';
 
 export default {
   setup() {
 
-    const {result} = useQuery(videoListQuery)
-    const videoList = useResult(result, null, data => data.video) // if query fail we'll get null
+    const {result} = useQuery(videoListQuery);
+    const videoList = useResult(result, null, data => data.video); // if query fails we'll get null
 
     return {
       videoList, //without using UseResult we would return `result`
+      track: ref(''),
       sort_by_item: ref(''),
       search_text: ref(''),
       countries_item: ref(''),
@@ -155,6 +159,7 @@ export default {
   },
   data() {
     return {
+      currentTrack: null,
       innerWidth: 0,
       search: '',
       sort_is_on: true,
@@ -176,6 +181,13 @@ export default {
     };
   },
   methods: {
+    playMusic(x) {
+      this.currentTrack = x.path.find(item => item.classList.contains('grey-button') && item.classList.contains('play')).dataset.track;
+      // let track = x.path.find(item => item.classList.contains('grey-button') && item.classList.contains('play')).dataset.track;
+      // return this.videoList
+      //   .map(item => item.music.playUrl)
+      //   .filter(item => item && item !== track);
+    },
     getTimeOnly,
     sort(e) {
       if (e.target.dataset.filter === this.sort_is_on) {
@@ -196,6 +208,13 @@ export default {
     isMobile() {
       return this.innerWidth < 1200;
     },
+
+    mutedTracks(){
+      return this.videoList
+        .map(item => item.music.playUrl)
+        .filter(item => item && item !== this.currentTrack);
+    },
+
     // getPosts() {
     //   return this.$store.getters['posts/get_posts'];
     // },
