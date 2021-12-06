@@ -116,9 +116,8 @@
     </div>
     <div class="posts-list">
       <div class="container">
-        <pre>TrackPlaying: {{this.currentTrack}}</pre>
-        <pre>TracksMuted: {{mutedTracks}}</pre>
-        <video-post :mutedTracks="mutedTracks" v-for="item in videoList" :key="item.id" :post="item" :is-mobile="isMobile"
+        <video-post :now-playing="currentTrack" v-for="item in videoList" :key="item.id" :post="item"
+                    :is-mobile="isMobile"
                     :data-test="item" @triggerParent="playMusic($event)"></video-post>
 
         <!--        <video-post v-for="post in searching" :key="post.name" :post="post" :is-mobile="isMobile"></video-post>-->
@@ -126,6 +125,9 @@
     </div>
 
   </q-page>
+  <audio ref="audioEl">
+    <source :src="currentTrack">
+  </audio>
 </template>
 
 <script>
@@ -159,7 +161,7 @@ export default {
   },
   data() {
     return {
-      currentTrack: null,
+      currentTrack: '',
       innerWidth: 0,
       search: '',
       sort_is_on: true,
@@ -180,13 +182,18 @@ export default {
       ],
     };
   },
+  watch: {
+    currentTrack(newCurrentTrack, oldCurrentTrack) {
+      const a = this.$refs.audioEl;
+      a.load();
+      if (newCurrentTrack) {
+        a.play();
+      }
+    },
+  },
   methods: {
     playMusic(x) {
-      this.currentTrack = x.path.find(item => item.classList.contains('grey-button') && item.classList.contains('play')).dataset.track;
-      // let track = x.path.find(item => item.classList.contains('grey-button') && item.classList.contains('play')).dataset.track;
-      // return this.videoList
-      //   .map(item => item.music.playUrl)
-      //   .filter(item => item && item !== track);
+      this.currentTrack = x;
     },
     getTimeOnly,
     sort(e) {
@@ -209,7 +216,7 @@ export default {
       return this.innerWidth < 1200;
     },
 
-    mutedTracks(){
+    mutedTracks() {
       return this.videoList
         .map(item => item.music.playUrl)
         .filter(item => item && item !== this.currentTrack);

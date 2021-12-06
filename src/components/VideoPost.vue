@@ -49,14 +49,8 @@
       <img :src="post.music.cover_url" alt="" class="music_frame">
       <span class="music_title">{{ post.music.title }}</span>
       <q-btn size="10px" round class="play grey-button" :data-track="post.music.playUrl"
-             :icon="isPlaying ? 'fas fa-pause' : 'fas fa-play'"
-             @click="$emit('triggerParent', $event)"/>
-      <audio
-        controls
-        :ref="`audioElem-${post.music.title}`"
-        :src="post.music.playUrl"
-        @play="stopOthers(post.music.title)"
-      ></audio>
+             :icon="isPlaying && post.music.playUrl === nowPlaying ? 'fas fa-pause' : 'fas fa-play'"
+             @click="triggerPlay(post.music.playUrl)"/>
     </div>
 
   </div>
@@ -93,14 +87,9 @@
              target="_blank"/>
       <img :src="post.music.cover_url" alt="" class="music_frame">
       <span class="music_title">{{ post.music.title }}</span>
-      <q-btn size="10px" round class="grey-button" :icon="isPlaying ? 'fas fa-pause' : 'fas fa-play'"
-             @click="playPause"/>
-      <audio
-        controls
-        :ref="`audioElem-${post.music.title}`"
-        :src="post.music.playUrl"
-        @play="stopOthers(post.music.title)"
-      ></audio>
+      <q-btn size="10px" round class="play grey-button" :data-track="post.music.playUrl"
+             :icon="isPlaying && post.music.playUrl === nowPlaying ? 'fas fa-pause' : 'fas fa-play'"
+             @click="triggerPlay(post.music.playUrl)"/>
       <q-icon class="fas fa-download grey-button"></q-icon>
     </div>
 
@@ -141,28 +130,9 @@ export default {
     getTimeOnly,
     timeAgo,
     numFormat,
-    // togglePlay() {
-    //   this.isPlaying = !this.isPlaying;
-    //   const a = this.$refs[0];
-    //   console.log(a);
-    //   if (this.isPlaying) {
-    //     a.play();
-    //   } else {
-    //     a.pause();
-    //     this.$refs.audioElem.currentTime = 0;
-    //   }
-    // },
-
-    playPause() {
-      this.playing = this.wavesurfer;
-    },
-    stopOthers(newTrack) {
-      if (this.currentTrack) {
-        let refName = `player-${this.currentTrack}`;
-        let player = this.$refs[refName][0];
-        player.pause();
-      }
-      this.currentTrack = newTrack;
+    triggerPlay(someAudioUrl) {
+      this.isPlaying = !this.isPlaying;
+      this.$emit('triggerParent', this.isPlaying ? someAudioUrl : null);
     },
   },
   components: {
@@ -171,7 +141,7 @@ export default {
   props: {
     post: Object,
     isMobile: Boolean,
-    mutedTracks: Array,
+    nowPlaying: String,
   },
   setup() {
     return {
