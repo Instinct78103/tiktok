@@ -1,5 +1,6 @@
-query videoList {
-  video(limit:10, order: "playCount desc"){
+query videoList ($limit: Int, $order: String) {
+  video(limit: $limit, order: $order){  # example, 10, `playCount desc`
+
     id
 
     video_url #video_url

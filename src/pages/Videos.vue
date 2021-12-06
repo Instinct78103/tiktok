@@ -1,103 +1,34 @@
 <template>
   <q-page>
 
-    <!--  FILTER-MOBILE  -->
-    <div class="filter_mobile" v-if="isMobile">
-      <div class="container">
-        <div class="filter_mobile-wrap">
-          <div class="search">
-            <q-form @submit.prevent class="search_form">
-              <q-input class="search_input" square outlined v-model="search_text" bg-color="white" label="Search"/>
-              <div>
-                <q-btn icon="search" type="submit" color="primary"/>
-              </div>
-            </q-form>
-          </div>
+    <posts-filter-mobile
+      v-if="isMobile"
+      :countries_item="countries_item"
+      :date_item="date_item"
+      :search_text="search_text"
+      :show_private="show_private"
+      :sort_by="sort_by"
+      :sort_by_item="sort_by_item"
+      :sort_direction="sort_direction"
+    />
 
-          <div class="sort_by">
-            <q-select standart
-                      v-model="sort_by_item"
-                      :options="sort_by"
-                      label="Sort By"
-                      transition-show="flip-up"
-                      transition-hide="flip-down"
-                      class="select_block"
-            ></q-select>
-            <i class="q-icon fas q-ml-sm"
-               :class="sortDirection === 'desc' ? 'fa-sort-amount-down': 'fa-sort-amount-down-alt'"
-               @click="sortDirection = (sortDirection === 'desc') ? 'asc' : 'desc'"
-            ></i>
-          </div>
+    <posts-filter-desktop
+      v-else
+      :countries_item="countries_item"
+      :date_item="date_item"
+      :search_text="search_text"
+      :show_private="show_private"
+      :sort_by="sort_by"
+      :sort_by_item="sort_by_item"
+      :sort_direction="sort_direction"
+      :today_date="today_date"
+    />
 
-          <ButtonFilters></ButtonFilters>
+    <audio ref="audioPlayer">
+      <source :src="currentTrack">
+    </audio>
 
-        </div>
-      </div>
-    </div>
-
-    <!--  FILTER-DESKTOP  -->
-    <div class="filter_desktop" v-else>
-      <div class="container">
-        <div class="filter-desktop-wrap">
-          <div class="date_picker">
-            <q-btn icon="event" round color="primary">
-              <q-popup-proxy @before-show="updateProxy" cover transition-show="scale" transition-hide="scale">
-                <q-date v-model="proxyDate">
-                  <div class="row items-center justify-end q-gutter-sm">
-                    <q-btn label="Cancel" color="primary" flat v-close-popup/>
-                    <q-btn label="OK" color="primary" flat @click="save" v-close-popup/>
-                  </div>
-                </q-date>
-              </q-popup-proxy>
-            </q-btn>
-          </div>
-
-          <div class="search">
-            <q-input outlined v-model="search_text" label="Search"/>
-          </div>
-
-          <div class="toggle_private">
-            <q-toggle
-              v-model="show_private"
-              color="red"
-              label="Show Private"
-              left-label
-            />
-          </div>
-
-
-          <div class="prepared_range">
-            <q-btn-toggle
-              v-model="date_item"
-              toggle-color="primary"
-              :options="[
-        {label: '7 days', value: '7'},
-        {label: '14 days', value: '14'},
-        {label: '30 days', value: '30'}
-      ]"
-            />
-          </div>
-
-          <div class="sort_by">
-            <q-select standart v-model="sort_by_item" :options="sort_by" label="Sort By"
-                      transition-show="flip-up"
-                      transition-hide="flip-down"
-            ></q-select>
-          </div>
-
-          <div class="country_filter">
-            <q-select standart v-model="countries_item" :options="countries" label="Filter By Country"
-                      transition-show="flip-up"
-                      transition-hide="flip-down"
-            ></q-select>
-          </div>
-
-        </div>
-      </div>
-    </div>
-
-
-    <!--  POSTS LIST  -->
+    <!--  TABLE HEADING  -->
     <div class="table_heading" v-if="!isMobile">
       <div class="container">
         <div class="th">
@@ -114,77 +45,86 @@
         </div>
       </div>
     </div>
+
+    <!--    POSTS-->
     <div class="posts-list">
       <div class="container">
-        <video-post :now-playing="currentTrack" v-for="item in videoList" :key="item.id" :post="item"
-                    :is-mobile="isMobile"
-                    :data-test="item" @triggerParent="playMusic($event)"></video-post>
-
-        <!--        <video-post v-for="post in searching" :key="post.name" :post="post" :is-mobile="isMobile"></video-post>-->
+        <video-post
+          v-for="item in videoList"
+          :now-playing="currentTrack"
+          :key="item.id"
+          :post="item"
+          :is-mobile="isMobile"
+          :data-test="item"
+          @triggerParent="playMusic($event)"
+        />
       </div>
     </div>
 
   </q-page>
-  <audio ref="audioEl">
-    <source :src="currentTrack">
-  </audio>
 </template>
 
 <script>
-import {ref, watch} from 'vue';
+import {ref} from 'vue';
 import {useQuery, useResult} from '@vue/apollo-composable';
-import gql from 'graphql-tag';
 
+import PostsFilterMobile from 'components/PostsFilterMobile';
+import PostsFilterDesktop from 'components/PostsFilterDesktop';
 import ButtonFilters from 'components/ButtonFilters';
 import VideoPost from 'components/VideoPost';
+
 import {getTimeOnly} from 'src/helper';
 import videoListQuery from '../graphql/videoList.query.gql';
 
 export default {
-  setup() {
-
-    const {result} = useQuery(videoListQuery);
-    const videoList = useResult(result, null, data => data.video); // if query fails we'll get null
-
-    return {
-      videoList, //without using UseResult we would return `result`
-      track: ref(''),
-      sort_by_item: ref(''),
-      search_text: ref(''),
-      countries_item: ref(''),
-    };
-  },
-
-  components: {
-    VideoPost,
-    ButtonFilters,
-  },
   data() {
     return {
+      today_date: new Date().toJSON().slice(0, 10).replace(/-/g, '/'),
       currentTrack: '',
       innerWidth: 0,
-      search: '',
+      search_text: '',
       sort_is_on: true,
-      sortDirection: 'desc',
+      sort_direction: 'desc',
       sort_by: [
-        'Likes',
-        'Views',
-        'Shares',
+        {'Likes': 'diggCount'},
+        {'Views': 'playCount'},
+        {'Shares': 'shareCount'},
       ],
       countries: [
         'USA',
         'UK',
         'Russia',
         'Germany',
-        'Germanyqwe',
-        'Germanydc',
-        'Germanydv',
       ],
     };
   },
+  setup() {
+    const {result} = useQuery(videoListQuery, {
+      limit: 50,
+      order: 'createTime desc',
+    });
+    console.log(result);
+    const videoList = useResult(result, null, data => data.video); // if query fails we'll get null
+
+    return {
+      videoList, //without using UseResult we would return `result`
+      track: ref(''),
+      sort_by_item: ref(''),
+      countries_item: ref(''),
+      show_private: ref(false),
+      date_item: ref(14),
+    };
+  },
+
+  components: {
+    PostsFilterMobile,
+    PostsFilterDesktop,
+    VideoPost,
+    ButtonFilters,
+  },
   watch: {
     currentTrack(newCurrentTrack, oldCurrentTrack) {
-      const a = this.$refs.audioEl;
+      const a = this.$refs.audioPlayer;
       a.load();
       if (newCurrentTrack) {
         a.play();
@@ -198,7 +138,7 @@ export default {
     getTimeOnly,
     sort(e) {
       if (e.target.dataset.filter === this.sort_is_on) {
-        this.sortDirection = this.sortDirection === 'asc' ? 'desc' : 'asc';
+        this.sort_direction = this.sort_direction === 'asc' ? 'desc' : 'asc';
       }
       this.sort_is_on = e.target.dataset.filter;
     },
@@ -214,12 +154,6 @@ export default {
   computed: {
     isMobile() {
       return this.innerWidth < 1200;
-    },
-
-    mutedTracks() {
-      return this.videoList
-        .map(item => item.music.playUrl)
-        .filter(item => item && item !== this.currentTrack);
     },
 
     // getPosts() {
@@ -246,7 +180,6 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-@import 'src/css/components/filter';
 @import 'src/css/components/table_heading';
 
 </style>
