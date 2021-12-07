@@ -5,6 +5,7 @@
 </template>
 
 <script>
+Chart.defaults.global.legend.display = false; // Hide label at the top
 
 import {Line} from 'vue-chartjs';
 import {numFormat} from 'src/helper'
