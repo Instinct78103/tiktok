@@ -93,7 +93,7 @@
       <q-icon class="fas fa-download grey-button"></q-icon>
     </div>
 
-    <chart></chart>
+    <chart :graph-data="post.graph"></chart>
 
     <div class="social_block flex">
       <div class="social_item flex">

@@ -23,12 +23,12 @@ query videoList ($limit: Int, $order: String) {
       music_url #download
     }
 
-#    graph(days: 2, total: 10){
-#      labels
-#      diff
-#      ds1
-#      ds2
-#    }
+    graph(days: 9, total: 10){
+      labels
+      diff
+      ds1
+      ds2
+    }
 
     playCount #views
     diggCount #likes

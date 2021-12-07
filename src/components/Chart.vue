@@ -7,16 +7,30 @@
 <script>
 
 import {Line} from 'vue-chartjs';
+import {numFormat} from 'src/helper'
 
 export default {
   name: 'Chart',
+  props:{
+    graphData: Object
+  },
   extends: Line,
+
+  data(){
+    return{
+      receivedData: this.graphData
+    }
+  },
+
   mounted() {
+    console.log(this.receivedData)
     this.renderChart({
-      labels: ['R', 'B', 'Y', 'G', 'P', 'O'],
+      // labels: ['R', 'B', 'Y', 'G', 'P', 'O'],
+      labels: Object.keys(...this.receivedData.labels),
       datasets: [{
         label: '',
-        data: [2, 35, 3, 5, 19, 3],
+        // data: [2, 35, 3, 5, 19, 3],
+        data: this.receivedData.diff.map(item => parseInt(numFormat(item))),
         backgroundColor: [
           'rgba(255, 99, 132, 0.2)',
           'rgba(54, 162, 235, 0.2)',
@@ -35,8 +49,12 @@ export default {
         ],
         borderWidth: 1,
         options: {
-          maintainAspectRatio: false,
-        }
+          scales: {
+            display: false
+          },
+          maintainAspectRatio: true,
+        },
+        fill: false
       }],
     });
   },

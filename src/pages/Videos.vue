@@ -103,8 +103,9 @@ export default {
       limit: 50,
       order: 'createTime desc',
     });
-    console.log(result);
+
     const videoList = useResult(result, null, data => data.video); // if query fails we'll get null
+    console.log(videoList);
 
     return {
       videoList, //without using UseResult we would return `result`
