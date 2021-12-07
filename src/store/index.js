@@ -1,6 +1,7 @@
-import { store } from 'quasar/wrappers'
-import { createStore } from 'vuex'
-import posts from './posts'
+import {store} from 'quasar/wrappers';
+import {createStore} from 'vuex';
+import posts from './posts';
+import filter from './filter';
 
 // import example from './module-example'
 
@@ -16,13 +17,14 @@ import posts from './posts'
 export default store(function (/* { ssrContext } */) {
   const Store = createStore({
     modules: {
-      posts
+      posts,
+      filter,
     },
 
     // enable strict mode (adds overhead!)
     // for dev mode and --debug builds only
-    strict: process.env.DEBUGGING
-  })
+    strict: process.env.DEBUGGING,
+  });
 
-  return Store
-})
+  return Store;
+});

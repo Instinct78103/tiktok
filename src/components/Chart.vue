@@ -24,7 +24,6 @@ export default {
   },
 
   mounted() {
-    console.log(this.receivedData)
     this.renderChart({
       // labels: ['R', 'B', 'Y', 'G', 'P', 'O'],
       labels: Object.keys(...this.receivedData.labels),

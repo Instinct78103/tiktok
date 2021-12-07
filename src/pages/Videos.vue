@@ -22,6 +22,7 @@
       :sort_by_item="sort_by_item"
       :sort_direction="sort_direction"
       :today_date="today_date"
+      @triggerRefetch="test($event)"
     />
 
     <audio ref="audioPlayer">
@@ -49,6 +50,7 @@
     <!--    POSTS-->
     <div class="posts-list">
       <div class="container">
+<!--        <button @click="refetch({limit:2, order: 'diggCount desc'})">Click Me!</button>-->
         <video-post
           v-for="item in videoList"
           :now-playing="currentTrack"
@@ -86,9 +88,9 @@ export default {
       sort_is_on: true,
       sort_direction: 'desc',
       sort_by: [
-        {'Likes': 'diggCount'},
-        {'Views': 'playCount'},
-        {'Shares': 'shareCount'},
+        {label: 'Likes', value: 'diggCount'},
+        {label: 'Views', value: 'playCount'},
+        {label: 'Shares', value: 'shareCount'},
       ],
       countries: [
         'USA',
@@ -99,15 +101,22 @@ export default {
     };
   },
   setup() {
-    const {result} = useQuery(videoListQuery, {
-      limit: 50,
+    const {result, variables, refetch} = useQuery(videoListQuery, {
+      limit: 10,
       order: 'createTime desc',
     });
 
+    // function selectLimitAndOrder(limit, order) {
+    //   variables.value = {
+    //     limit,
+    //     order,
+    //   };
+    // }
+
     const videoList = useResult(result, null, data => data.video); // if query fails we'll get null
-    console.log(videoList);
 
     return {
+      refetch,
       videoList, //without using UseResult we would return `result`
       track: ref(''),
       sort_by_item: ref(''),
@@ -133,6 +142,9 @@ export default {
     },
   },
   methods: {
+    test(some){
+      return this.refetch({limit: Math.floor(Math.random() * 11), order: `${some} desc`})
+    },
     playMusic(x) {
       this.currentTrack = x;
     },
