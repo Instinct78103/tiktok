@@ -1,20 +1,24 @@
-export async function range({commit}, days) {
-  commit('set_range', days);
+export async function range({commit}, val) {
+  commit('set_range', val);
 }
 
-export async function search({commit}, search_model) {
-  commit('set_search', search_model);
+export async function search({commit}, val) {
+  commit('set_search', val);
 }
 
-export async function sortBy({commit}, sortBy_model) {
-  commit('set_sortBy', sortBy_model);
+export async function sortBy({commit}, val) {
+  commit('set_sortBy', val);
 }
 
-export async function showPrivate({commit}, showPrivate_model) {
-  commit('set_showPrivate', showPrivate_model);
+export async function showPrivate({commit}, val) {
+  commit('set_showPrivate', val);
 }
 
-export async function region({commit}, region_model) {
-  commit('set_region', region_model);
+export async function region({commit}, val) {
+  commit('set_region', val);
+}
+
+export async function order({commit}, val) {
+  commit('set_order', val);
 }
 

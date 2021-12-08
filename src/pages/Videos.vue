@@ -22,7 +22,6 @@
       :sort_by_item="sort_by_item"
       :sort_direction="sort_direction"
       :today_date="today_date"
-      @triggerRefetch="test($event)"
     />
 
     <audio ref="audioPlayer">
@@ -46,11 +45,10 @@
         </div>
       </div>
     </div>
-
-    <!--    POSTS-->
+    <!--  POSTS  -->
     <div class="posts-list">
       <div class="container">
-<!--        <button @click="refetch({limit:2, order: 'diggCount desc'})">Click Me!</button>-->
+        <!--        <button @click="refetch({limit:2, order: 'diggCount desc'})">Click Me!</button>-->
         <video-post
           v-for="item in videoList"
           :now-playing="currentTrack"
@@ -62,7 +60,6 @@
         />
       </div>
     </div>
-
   </q-page>
 </template>
 
@@ -125,7 +122,6 @@ export default {
       date_item: ref(14),
     };
   },
-
   components: {
     PostsFilterMobile,
     PostsFilterDesktop,
@@ -140,11 +136,14 @@ export default {
         a.play();
       }
     },
+    '$store.state.filter.model_sortBy': function (val) {
+      this.refetch({
+        limit: Math.floor(Math.random() * 12),
+        order: `${val} desc`,
+      });
+    },
   },
   methods: {
-    test(some){
-      return this.refetch({limit: Math.floor(Math.random() * 11), order: `${some} desc`})
-    },
     playMusic(x) {
       this.currentTrack = x;
     },

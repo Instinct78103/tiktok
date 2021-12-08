@@ -1,32 +1,43 @@
 <template>
   <div class="chart_block" style="width: 200px; height: 100px">
+    {{key}}
     <canvas ref="canvas"></canvas>
   </div>
 </template>
 
 <script>
 Chart.defaults.global.legend.display = false; // Hide label at the top
+Chart.defaults.scale.ticks.display = false;
+// Chart.defaults.scale.gridLines.display = false;
 
 import {Line} from 'vue-chartjs';
-import {numFormat} from 'src/helper'
+import {numFormat} from 'src/helper';
 
 export default {
   name: 'Chart',
-  props:{
-    graphData: Object
+  props: {
+    key: String,
+    graphData: Object,
   },
   extends: Line,
 
-  data(){
-    return{
-      receivedData: this.graphData
+  data() {
+    return {
+      receivedData: this.graphData,
+    };
+  },
+
+  watch: {
+    t: function cb(newVal, oldVal){
+      console.log(newVal)
     }
   },
 
   mounted() {
     this.renderChart({
       // labels: ['R', 'B', 'Y', 'G', 'P', 'O'],
-      labels: Object.keys(...this.receivedData.labels),
+      labels: this.receivedData.labels
+        .map(item => item.split('#')[1]),
       datasets: [{
         label: '',
         // data: [2, 35, 3, 5, 19, 3],
@@ -50,11 +61,15 @@ export default {
         borderWidth: 1,
         options: {
           scales: {
-            display: false
+            xAxes: [{
+              ticks: {
+                display: false,
+              },
+            }],
           },
           maintainAspectRatio: true,
         },
-        fill: false
+        fill: false,
       }],
     });
   },

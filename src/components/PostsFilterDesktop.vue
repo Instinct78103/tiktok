@@ -41,13 +41,23 @@
             ]"
           />
         </div>
-        <pre>{{ get_sortBy }}</pre>
         <div class="sort_by">
           <q-select standart v-model="sort_by_item" :options="sort_by" label="Sort By"
                     transition-show="flip-up"
                     transition-hide="flip-down"
                     @update:model-value="onSortByChange(sort_by_item)"
           ></q-select>
+          <q-icon class="fas"
+                  :class="$store.getters['filter/get_order'] === 'desc'
+                  ? 'fa-sort-amount-down'
+                  : 'fa-sort-amount-down-alt'"
+                  @click=""
+          ></q-icon>
+
+          <i class="q-icon fas q-ml-sm"
+             :class="sort_direction === 'desc' ? 'fa-sort-amount-down': 'fa-sort-amount-down-alt'"
+             @click="sort_Direction = (sort_direction === 'desc') ? 'asc' : 'desc'"
+          ></i>
         </div>
 
         <div class="country_filter">
@@ -64,7 +74,6 @@
 
 <script>
 import {ref} from 'vue';
-import {useQuery, useResult} from '@vue/apollo-composable';
 
 export default {
   name: 'PostsFilterDesktop',
@@ -72,13 +81,6 @@ export default {
   methods: {
     onSortByChange(val) {
       this.$store.dispatch('filter/sortBy', val.value);
-      this.$emit('triggerRefetch', this.get_sortBy)
-    },
-  },
-
-  computed: {
-    get_sortBy() {
-      return this.$store.getters['filter/get_sortBy'];
     },
   },
 
