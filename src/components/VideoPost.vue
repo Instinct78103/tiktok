@@ -1,5 +1,5 @@
 <template>
-  <div class="video_post_mobile" v-if="isMobile" :data-region="post.author.region.toLowerCase()">
+  <div class="video_post_mobile" v-if="isMobile">
     <div class="post_title">
       <router-link :to="{ name: 'VideoDetails', params: { id: post.id } }">{{ post.desc }}</router-link>
     </div>
@@ -56,7 +56,7 @@
   </div>
 
 
-  <div class="video_post_desktop" :data-region="post.author.region.toLowerCase()" v-else>
+  <div class="video_post_desktop" v-else>
     <div class="video_block">
       <q-btn size="10px" round type="a" :href="post.video_url" class="grey-button" icon="fab fa-tiktok"
              target="_blank"/>
@@ -76,20 +76,20 @@
     </div>
 
     <div class="user_block flex items-center">
-      <q-btn size="10px" round type="a" :href="post.author.profile_url" class="grey-button" icon="fas fa-user"
+      <q-btn size="10px" round type="a" :href="post.author?.profile_url" class="grey-button" icon="fas fa-user"
              target="_blank"/>
-      <img class="user_avatar" :src="post.author.cover_url" :alt="post.name"/>
-      <span class="user_name">{{ post.author.uniqueId }}</span>
+      <img class="user_avatar" :src="post.author?.cover_url" :alt="post.name"/>
+      <span class="user_name">{{ post.author?.uniqueId }}</span>
     </div>
 
     <div class="music_block flex items-center">
-      <q-btn size="10px" round type="a" :href="post.music.music_url" class="grey-button" icon="fas fa-music"
+      <q-btn size="10px" round type="a" :href="post.music?.music_url" class="grey-button" icon="fas fa-music"
              target="_blank"/>
-      <img :src="post.music.cover_url" alt="" class="music_frame">
-      <span class="music_title">{{ post.music.title }}</span>
-      <q-btn size="10px" round class="play grey-button" :data-track="post.music.playUrl"
-             :icon="isPlaying && post.music.playUrl === nowPlaying ? 'fas fa-pause' : 'fas fa-play'"
-             @click="triggerPlay(post.music.playUrl)"/>
+      <img :src="post.music?.cover_url" alt="" class="music_frame">
+      <span class="music_title">{{ post.music?.title }}</span>
+      <q-btn size="10px" round class="play grey-button" :data-track="post.music?.playUrl"
+             :icon="isPlaying && post.music?.playUrl === nowPlaying ? 'fas fa-pause' : 'fas fa-play'"
+             @click="triggerPlay(post.music?.playUrl)"/>
       <q-icon class="fas fa-download grey-button"></q-icon>
     </div>
 

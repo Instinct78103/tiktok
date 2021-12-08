@@ -42,22 +42,23 @@
           />
         </div>
         <div class="sort_by">
-          <q-select standart v-model="sort_by_item" :options="sort_by" label="Sort By"
+          <q-select class="sort_by_select"
+                    standart
+                    v-model="sort_by_item"
+                    :options="sort_by"
+                    label="Sort By"
                     transition-show="flip-up"
                     transition-hide="flip-down"
-                    @update:model-value="onSortByChange(sort_by_item)"
+                    @update:model-value="changeSortBy(sort_by_item)"
           ></q-select>
-          <q-icon class="fas"
-                  :class="$store.getters['filter/get_order'] === 'desc'
-                  ? 'fa-sort-amount-down'
-                  : 'fa-sort-amount-down-alt'"
-                  @click=""
-          ></q-icon>
-
-          <i class="q-icon fas q-ml-sm"
-             :class="sort_direction === 'desc' ? 'fa-sort-amount-down': 'fa-sort-amount-down-alt'"
-             @click="sort_Direction = (sort_direction === 'desc') ? 'asc' : 'desc'"
-          ></i>
+          <q-btn
+            size="10px"
+            class="round grey-button"
+            :icon="$store.getters['filter/get_order'] === 'desc'
+              ? 'fas fa-sort-amount-down'
+              : 'fas fa-sort-amount-down-alt'"
+            @click="changeOrder"
+          />
         </div>
 
         <div class="country_filter">
@@ -79,15 +80,18 @@ export default {
   name: 'PostsFilterDesktop',
 
   methods: {
-    onSortByChange(val) {
+    changeSortBy(val) {
       this.$store.dispatch('filter/sortBy', val.value);
+    },
+    changeOrder() {
+      this.$store.dispatch('filter/order', this.$store.getters['filter/get_order'] === 'desc' ? 'asc' : 'desc');
     },
   },
 
   props: {
     countries: Array,
     date_item: Number,
-    sort_by_item: String,
+    sort_by_item: Object,
     search_text: String,
     countries_item: String,
     sort_by: Array,

@@ -125,9 +125,22 @@
   }
 
   .toggle_private,
-  .sort_by,
   .country_filter {
     width: 150px;
+  }
+
+  .sort_by {
+    display: flex;
+    align-items: center;
+
+    > .sort_by_select {
+      width: 150px;
+      margin-right: 10px;
+    }
+
+    > .grey-button {
+
+    }
   }
 
   .search {

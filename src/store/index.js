@@ -17,7 +17,7 @@ import filter from './filter';
 export default store(function (/* { ssrContext } */) {
   const Store = createStore({
     modules: {
-      posts,
+      // posts,
       filter,
     },
 

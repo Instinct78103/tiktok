@@ -74,6 +74,7 @@ import VideoPost from 'components/VideoPost';
 
 import {getTimeOnly} from 'src/helper';
 import videoListQuery from '../graphql/videoList.query.gql';
+import {useStore} from 'vuex';
 
 export default {
   data() {
@@ -85,6 +86,7 @@ export default {
       sort_is_on: true,
       sort_direction: 'desc',
       sort_by: [
+        {label: 'Creation Date', value: 'createTime'},
         {label: 'Likes', value: 'diggCount'},
         {label: 'Views', value: 'playCount'},
         {label: 'Shares', value: 'shareCount'},
@@ -98,28 +100,24 @@ export default {
     };
   },
   setup() {
-    const {result, variables, refetch} = useQuery(videoListQuery, {
-      limit: 10,
-      order: 'createTime desc',
-    });
+    const {result, refetch, fetchMore} = useQuery(videoListQuery);
 
-    // function selectLimitAndOrder(limit, order) {
-    //   variables.value = {
-    //     limit,
-    //     order,
-    //   };
-    // }
+    const store = useStore();
+    store.dispatch('filter/sortBy', 'createTime');
+    store.dispatch('filter/order', 'desc');
 
     const videoList = useResult(result, null, data => data.video); // if query fails we'll get null
 
     return {
       refetch,
+      fetchMore,
       videoList, //without using UseResult we would return `result`
       track: ref(''),
-      sort_by_item: ref(''),
+      sort_by_item: ref({label: 'Creation Date', value: 'createTime'}),
       countries_item: ref(''),
       show_private: ref(false),
       date_item: ref(14),
+      pageNum: ref(0),
     };
   },
   components: {
@@ -138,12 +136,36 @@ export default {
     },
     '$store.state.filter.model_sortBy': function (val) {
       this.refetch({
-        limit: Math.floor(Math.random() * 12),
-        order: `${val} desc`,
+        limit: 10,
+        order: `${val} ${this.$store.getters['filter/get_order']}`,
+      });
+    },
+    '$store.state.filter.order': function (val) {
+      this.refetch({
+        limit: 10,
+        order: `${this.$store.getters['filter/get_sortBy']} ${val}`,
       });
     },
   },
   methods: {
+    loadMore() {
+      this.pageNum++;
+      this.fetchMore({
+        query: videoListQuery,
+        variables: {limit: (this.pageNum * this.get_pageSize)},
+        updateQuery: (existing, incoming) => ({
+          videoList: [this.videoList, incoming.fetchMoreResult],
+        }),
+      });
+    },
+    getNextPosts() {
+      window.onscroll = () => {
+        let bottomOfWindow = document.documentElement.scrollTop + window.innerHeight === document.documentElement.offsetHeight;
+        if (bottomOfWindow) {
+          this.loadMore();
+        }
+      };
+    },
     playMusic(x) {
       this.currentTrack = x;
     },
@@ -156,38 +178,21 @@ export default {
     },
   },
   created() {
-    // this.$store.dispatch('posts/fetchPosts');
-
     this.innerWidth = window.innerWidth;
     window.addEventListener('resize', () => {
       this.innerWidth = window.innerWidth;
     });
   },
+  mounted() {
+    this.getNextPosts();
+  },
   computed: {
     isMobile() {
       return this.innerWidth < 1200;
     },
-
-    // getPosts() {
-    //   return this.$store.getters['posts/get_posts'];
-    // },
-    // searching() {
-    //   if (this.sort) {
-    //     return this.getPosts
-    //       .filter((item) =>
-    //         item.name.toLowerCase().includes(this.search.toLowerCase()),
-    //       )
-    //       .sort((a, b) => {
-    //         if (a[this.sort_is_on] === b[this.sort_is_on]) return 0;
-    //         if (a[this.sort_is_on] > b[this.sort_is_on])
-    //           return this.sortDirection === 'asc' ? 1 : -1;
-    //         if (a[this.sort_is_on] < b[this.sort_is_on])
-    //           return this.sortDirection === 'asc' ? -1 : 1;
-    //       });
-    //   } else {
-    //     return this.getPosts;
-    //   }
-    // },
+    get_pageSize() {
+      return this.$store.getters['filter/get_limit'];
+    },
   },
 };
 </script>

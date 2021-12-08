@@ -17,3 +17,7 @@ export function set_showPrivate(state, payload) {
 export function set_region(state, payload) {
   state.model_region = payload;
 }
+
+export function set_order(state, payload) {
+  state.order = payload;
+}
