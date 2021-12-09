@@ -4,7 +4,7 @@
   "extensions": {
     "endpoints": {
       "Default GraphQL Endpoint": {
-        "url": "https://tiktok.ufobe.com/api/graphql",
+        "url": "https://tiktok3.ufobe.com/api/graphql",
         "headers": {
           "user-agent": "JS GraphQL"
         },

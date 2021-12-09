@@ -18,6 +18,6 @@ export function set_region(state, payload) {
   state.model_region = payload;
 }
 
-export function set_order(state, payload) {
-  state.order = payload;
+export function set_orderDirection(state, payload) {
+  state.order_direction = payload;
 }

@@ -7,7 +7,7 @@ export /* async */ function getClientOptions(/* {app, router, ...} */ options) {
         uri:
           process.env.GRAPHQL_URI ||
           // Change to your graphql endpoint.
-          'https://tiktok.ufobe.com/api/graphql',
+          'https://tiktok3.ufobe.com/api/graphql',
       }),
       cache: new InMemoryCache(),
     },

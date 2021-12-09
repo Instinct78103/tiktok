@@ -18,8 +18,8 @@ export function get_region(state) {
   return state.model_region;
 }
 
-export function get_order(state) {
-  return state.order;
+export function get_orderDirection(state) {
+  return state.order_direction;
 }
 
 export function get_limit(state) {

@@ -44,7 +44,7 @@ export default {
     search_text: String,
     countries_item: String,
     sort_by: Array,
-    sort_direction: String
+    sort_direction: String,
   },
   components: {
     ButtonFilters,

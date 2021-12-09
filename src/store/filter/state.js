@@ -5,7 +5,9 @@ export default function () {
     model_sortBy: '',
     model_showPrivate: false,
     model_region: '',
-    order: 'desc',
-    limit: 10
+
+    order_direction: 'desc',
+    limit: 10,
+    offset: 10
   };
 }

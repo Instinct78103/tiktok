@@ -104,7 +104,7 @@ export default {
 
     const store = useStore();
     store.dispatch('filter/sortBy', 'createTime');
-    store.dispatch('filter/order', 'desc');
+    store.dispatch('filter/orderDirection', 'desc');
 
     const videoList = useResult(result, null, data => data.video); // if query fails we'll get null
 
@@ -136,20 +136,23 @@ export default {
     },
     '$store.state.filter.model_sortBy': function (val) {
       this.refetch({
-        limit: 10,
-        order: `${val} ${this.$store.getters['filter/get_order']}`,
+        limit: this.$store.getters['filter/get_limit'],
+        order: val,
+        order_direction: this.$store.getters['filter/get_orderDirection']
       });
     },
-    '$store.state.filter.order': function (val) {
+    '$store.state.filter.order_direction': function (val) {
       this.refetch({
-        limit: 10,
-        order: `${this.$store.getters['filter/get_sortBy']} ${val}`,
+        limit: this.$store.getters['filter/get_limit'],
+        order: this.$store.getters['filter/get_sortBy'],
+        order_direction: val,
       });
     },
   },
   methods: {
     loadMore() {
       this.pageNum++;
+
       this.fetchMore({
         query: videoListQuery,
         variables: {limit: (this.pageNum * this.get_pageSize)},

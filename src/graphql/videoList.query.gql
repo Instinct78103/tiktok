@@ -1,5 +1,17 @@
-query videoList ($limit: Int, $order: String) {
-  video(limit: $limit, order: $order){  # example, 10, `playCount desc`
+query videoList (
+  $limit: Int,
+  $order: String,
+  $order_direction: order_direction,
+  $offset: Int,
+  $q_search: String
+) {
+  video(
+    limit: $limit,
+    order: $order,
+    order_direction: $order_direction,
+    offset: $offset,
+    search_q: $q_search
+  ){  # example, 10, `playCount desc`
 
     id
 

@@ -18,7 +18,7 @@ export async function region({commit}, val) {
   commit('set_region', val);
 }
 
-export async function order({commit}, val) {
-  commit('set_order', val);
+export async function orderDirection({commit}, val) {
+  commit('set_orderDirection', val);
 }
 

@@ -54,7 +54,7 @@
           <q-btn
             size="10px"
             class="round grey-button"
-            :icon="$store.getters['filter/get_order'] === 'desc'
+            :icon="$store.getters['filter/get_orderDirection'] === 'desc'
               ? 'fas fa-sort-amount-down'
               : 'fas fa-sort-amount-down-alt'"
             @click="changeOrder"
@@ -71,6 +71,7 @@
       </div>
     </div>
   </div>
+  <pre>{{ this.$store.state.filter }}</pre>
 </template>
 
 <script>
@@ -84,7 +85,22 @@ export default {
       this.$store.dispatch('filter/sortBy', val.value);
     },
     changeOrder() {
-      this.$store.dispatch('filter/order', this.$store.getters['filter/get_order'] === 'desc' ? 'asc' : 'desc');
+      this.$store.dispatch('filter/orderDirection', this.$store.getters['filter/get_orderDirection'] === 'desc' ? 'asc' : 'desc');
+    },
+    changePrivateOnly(val) {
+      this.$store.dispatch('filter/showPrivate', !val);
+    },
+  },
+
+  computed: {
+    showPrivateStatus() {
+      return this.$store.getters['filter/get_showPrivate'];
+    },
+  },
+
+  watch: {
+    'show_private': function (newVal) {
+      this.$store.dispatch('filter/showPrivate', newVal);
     },
   },
 

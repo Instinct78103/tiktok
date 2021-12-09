@@ -66,7 +66,7 @@ type Music {
 type Query {
   author(id: Int!): Author
   hello: String
-  video(id: Int, limit: Int = 10, order: String = "id DESC"): [Video]
+  video(id: Int, limit: Int = 10, offset: Int = 0, order: String = "createTime", order_direction: order_direction = desc, search_q: String): [Video]
 }
 
 type Video {
@@ -82,7 +82,7 @@ type Video {
   diggCount: Int
   duration: Int
   engagement: Float
-  graph(days: Int!, total: Int!): Graph
+  graph(days: Int!, range: Range, total: Int!): Graph
   growthDuration: Float
   id: Int
   music: Music
@@ -101,4 +101,20 @@ type Video {
   video_url: String
   "stats update time/hour"
   ymdh(format: String): String
+}
+
+"Time range"
+enum Range {
+  "Daily"
+  day
+  "Hourly"
+  hour
+}
+
+"Sort direction"
+enum order_direction {
+  "ASC"
+  asc
+  "DESC"
+  desc
 }
