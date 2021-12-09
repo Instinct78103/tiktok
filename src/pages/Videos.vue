@@ -116,8 +116,8 @@ export default {
       sort_by_item: ref({label: 'Creation Date', value: 'createTime'}),
       countries_item: ref(''),
       show_private: ref(false),
-      date_item: ref(14),
-      pageNum: ref(0),
+      date_item: ref(null),
+      pageNum: ref(1),
     };
   },
   components: {
@@ -138,7 +138,7 @@ export default {
       this.refetch({
         limit: this.$store.getters['filter/get_limit'],
         order: val,
-        order_direction: this.$store.getters['filter/get_orderDirection']
+        order_direction: this.$store.getters['filter/get_orderDirection'],
       });
     },
     '$store.state.filter.order_direction': function (val) {
@@ -148,17 +148,30 @@ export default {
         order_direction: val,
       });
     },
+    'pageNum': function (val) {
+      this.$store.dispatch('filter/pageNum', val);
+    },
   },
   methods: {
     loadMore() {
       this.pageNum++;
+      console.log(this.$store.getters);
 
       this.fetchMore({
         query: videoListQuery,
-        variables: {limit: (this.pageNum * this.get_pageSize)},
-        updateQuery: (existing, incoming) => ({
-          videoList: [this.videoList, incoming.fetchMoreResult],
-        }),
+        variables: {
+          offset: (this.pageNum * this.get_pageSize),
+        },
+        updateQuery: (previousResult, {fetchMoreResult}) => {
+          if (!fetchMoreResult) return previousResult;
+          return {
+            ...previousResult,
+            video: [
+              ...previousResult.video,
+              ...fetchMoreResult.video,
+            ],
+          };
+        },
       });
     },
     getNextPosts() {

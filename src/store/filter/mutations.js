@@ -21,3 +21,7 @@ export function set_region(state, payload) {
 export function set_orderDirection(state, payload) {
   state.order_direction = payload;
 }
+
+export function set_pageNum(state, payload) {
+  state.pageNum = payload;
+}

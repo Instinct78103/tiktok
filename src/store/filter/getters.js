@@ -25,3 +25,7 @@ export function get_orderDirection(state) {
 export function get_limit(state) {
   return state.limit;
 }
+
+export function get_pageNum(state) {
+  return state.pageNum;
+}

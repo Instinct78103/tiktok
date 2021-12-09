@@ -22,3 +22,6 @@ export async function orderDirection({commit}, val) {
   commit('set_orderDirection', val);
 }
 
+export async function pageNum({commit}, val) {
+  commit('set_pageNum', val);
+}

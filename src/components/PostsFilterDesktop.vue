@@ -71,7 +71,7 @@
       </div>
     </div>
   </div>
-  <pre>{{ this.$store.state.filter }}</pre>
+  <pre>{{ this.$store.state }}</pre>
 </template>
 
 <script>

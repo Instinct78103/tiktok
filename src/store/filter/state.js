@@ -8,6 +8,7 @@ export default function () {
 
     order_direction: 'desc',
     limit: 10,
-    offset: 10
+    offset: 10,
+    pageNum: 1
   };
 }
