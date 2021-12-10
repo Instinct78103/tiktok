@@ -66,7 +66,13 @@ type Music {
 type Query {
   author(id: Int!): Author
   hello: String
-  video(id: Int, limit: Int = 10, offset: Int = 0, order: String = "createTime", order_direction: order_direction = desc, search_q: String): [Video]
+  region: [Region]
+  video(id: Int, limit: Int = 10, offset: Int = 0, order: String = "createTime", order_direction: order_direction = desc, search_q: String, search_region: String): [Video]
+}
+
+type Region {
+  code: String
+  name: String
 }
 
 type Video {

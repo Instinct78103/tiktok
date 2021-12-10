@@ -4,8 +4,8 @@
       <div class="filter-desktop-wrap">
         <div class="date_picker">
           <q-btn icon="event" round color="primary">
-            <q-popup-proxy @before-show="updateProxy" cover transition-show="scale" transition-hide="scale">
-              <q-date v-model="proxyDate">
+            <q-popup-proxy cover transition-show="scale" transition-hide="scale">
+              <q-date @before-update="updateProxy" v-model="proxyDate" range>
                 <div class="row items-center justify-end q-gutter-sm">
                   <q-btn label="Cancel" color="primary" flat v-close-popup/>
                   <q-btn label="OK" color="primary" flat @click="save" v-close-popup/>
@@ -13,7 +13,7 @@
               </q-date>
             </q-popup-proxy>
           </q-btn>
-          {{ date }}
+          {{ chosen }}
         </div>
 
         <div class="search">
@@ -35,9 +35,24 @@
             v-model="date_item"
             toggle-color="primary"
             :options="[
-              {label: '7 days', value: 7},
-              {label: '14 days', value: 14},
-              {label: '30 days', value: 30}
+              {
+                label: '7 days',
+                value: {
+                  from: days_7, to: today
+                }
+              },
+              {
+                label: '14 days',
+                value: {
+                  from: days_14, to: today
+                }
+              },
+              {
+                label: '30 days',
+                value: {
+                  from: days_30, to: today
+                }
+              }
             ]"
           />
         </div>
@@ -76,6 +91,8 @@
 
 <script>
 import {ref} from 'vue';
+import {useStore} from 'vuex';
+import {addZero} from 'src/helper'
 
 export default {
   name: 'PostsFilterDesktop',
@@ -102,11 +119,20 @@ export default {
     'show_private': function (newVal) {
       this.$store.dispatch('filter/showPrivate', newVal);
     },
+    'chosen': function (newVal) {
+      this.$store.dispatch('filter/range', newVal);
+    },
+    'date_item': function (newVal) {
+      this.chosen = newVal
+      this.proxyDate = newVal
+      // this.$store.dispatch('filter/range', newVal);
+    },
+
   },
 
   props: {
     countries: Array,
-    date_item: Number,
+    date_item: Object,
     sort_by_item: Object,
     search_text: String,
     countries_item: String,
@@ -117,20 +143,36 @@ export default {
   },
 
   setup() {
+    const store = useStore();
+
+    const d = new Date();
     const today = new Date().toJSON().slice(0, 10).replace(/-/g, '/');
-    const date = ref(today);
-    const proxyDate = ref('2019/03/01');
+
+    const proxyDate = ref(today);
+    const chosen = ref(store.getters['filter/get_range']);
+
+    const days_30 = new Date(Date.now() - 29 * 24 * 60 * 60 * 1000)
+      .toJSON().slice(0, 10).replace(/-/g, '/');
+    const days_14 = new Date(Date.now() - 13 * 24 * 60 * 60 * 1000)
+      .toJSON().slice(0, 10).replace(/-/g, '/');
+    const days_7 = new Date(Date.now() - 6 * 24 * 60 * 60 * 1000)
+      .toJSON().slice(0, 10).replace(/-/g, '/');
+
 
     return {
-      date,
+      chosen,
       proxyDate,
+      today,
+      days_30,
+      days_14,
+      days_7,
 
       updateProxy() {
-        proxyDate.value = date.value;
+        chosen.value = proxyDate.value;
       },
 
       save() {
-        date.value = proxyDate.value;
+        chosen.value = proxyDate.value;
       },
     };
   },

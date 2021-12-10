@@ -1,6 +1,6 @@
 export default function () {
   return {
-    model_range: [],
+    model_range: null,
     model_search: '',
     model_sortBy: '',
     model_showPrivate: false,

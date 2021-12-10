@@ -1,12 +1,11 @@
-export function getTimeOnly(date) {
-
-  function addZero(i) {
-    if (i < 10) {
-      i = '0' + i;
-    }
-    return i;
+export function addZero(i) {
+  if (i < 10) {
+    i = '0' + i;
   }
+  return i;
+}
 
+export function getTimeOnly(date) {
   const d = new Date(date);
   let h = addZero(d.getHours());
   let m = addZero(d.getMinutes());
