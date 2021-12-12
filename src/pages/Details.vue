@@ -95,7 +95,7 @@
 
 
         <!-- CHART -->
-        <chart></chart>
+<!--        <chart></chart>-->
 
       </div>
     </div>
@@ -141,30 +141,32 @@ export default defineComponent({
   //   });
   // },
   created() {
-    this.fetchDetails();
+    // this.fetchDetails();
+    console.log(this.$route.params)
   },
+
   data() {
     return {
       details: {},
     };
   },
   methods: {
-    async fetchDetails() {
-      if (this.$route.params.id) {
-        const index = this.$store.getters['posts/get_posts'].findIndex(post => post.id === this.$route.params.id);
-        const isPostInTheStore = index > -1;
-
-        if (!isPostInTheStore) {
-          const p = await fetch(
-            `https://6172d1dd110a740017222e38.mockapi.io/api/v1/users/${this.$route.params.id}`,
-          );
-          this.details = await p.json();
-        } else {
-          this.details = this.$store.getters['posts/get_posts']
-            .find(post => post.id === this.$route.params.id);
-        }
-      }
-    },
+    // async fetchDetails() {
+    //   if (this.$route.params.id) {
+    //     const index = this.$store.getters['posts/get_posts'].findIndex(post => post.id === this.$route.params.id);
+    //     const isPostInTheStore = index > -1;
+    //
+    //     if (!isPostInTheStore) {
+    //       const p = await fetch(
+    //         `https://6172d1dd110a740017222e38.mockapi.io/api/v1/users/${this.$route.params.id}`,
+    //       );
+    //       this.details = await p.json();
+    //     } else {
+    //       this.details = this.$store.getters['posts/get_posts']
+    //         .find(post => post.id === this.$route.params.id);
+    //     }
+    //   }
+    // },
   },
   computed: {
     postData() {

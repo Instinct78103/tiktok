@@ -37,21 +37,21 @@
             :options="[
               {
                 label: '7 days',
-                value: {
+                value: JSON.stringify({
                   from: days_7, to: today
-                }
+                })
               },
               {
                 label: '14 days',
-                value: {
+                value: JSON.stringify({
                   from: days_14, to: today
-                }
+                })
               },
               {
                 label: '30 days',
-                value: {
+                value: JSON.stringify({
                   from: days_30, to: today
-                }
+                })
               }
             ]"
           />
@@ -77,7 +77,7 @@
         </div>
 
         <div class="country_filter">
-          <q-select standart v-model="countries_item" :options="countries" label="Filter By Country"
+          <q-select standart v-model="country" :options="countries" label="Filter By Country"
                     transition-show="flip-up"
                     transition-hide="flip-down"
           ></q-select>
@@ -92,7 +92,7 @@
 <script>
 import {ref} from 'vue';
 import {useStore} from 'vuex';
-import {addZero} from 'src/helper'
+import {addZero} from 'src/helper';
 
 export default {
   name: 'PostsFilterDesktop',
@@ -123,9 +123,12 @@ export default {
       this.$store.dispatch('filter/range', newVal);
     },
     'date_item': function (newVal) {
-      this.chosen = newVal
-      this.proxyDate = newVal
+      this.chosen = JSON.parse(newVal);
+      this.proxyDate = JSON.parse(newVal);
       // this.$store.dispatch('filter/range', newVal);
+    },
+    'country': function (newVal) {
+      this.$store.dispatch('filter/region', newVal);
     },
 
   },
@@ -135,15 +138,18 @@ export default {
     date_item: Object,
     sort_by_item: Object,
     search_text: String,
-    countries_item: String,
     sort_by: Array,
     sort_direction: String,
     show_private: Boolean,
     today_date: String,
   },
 
-  setup() {
+  setup(props) {
     const store = useStore();
+    const country = ref(null);
+
+    const countries = props.countries;
+    console.log(countries);
 
     const d = new Date();
     const today = new Date().toJSON().slice(0, 10).replace(/-/g, '/');
@@ -160,6 +166,7 @@ export default {
 
 
     return {
+      country,
       chosen,
       proxyDate,
       today,

@@ -3,7 +3,6 @@
 
     <posts-filter-mobile
       v-if="isMobile"
-      :countries_item="countries_item"
       :date_item="date_item"
       :search_text="search_text"
       :show_private="show_private"
@@ -14,7 +13,7 @@
 
     <posts-filter-desktop
       v-else
-      :countries_item="countries_item"
+      :countries="regionsList"
       :date_item="date_item"
       :search_text="search_text"
       :show_private="show_private"
@@ -74,7 +73,9 @@ import VideoPost from 'components/VideoPost';
 
 import {getTimeOnly} from 'src/helper';
 import videoListQuery from '../graphql/videoList.query.gql';
+import regionsListQuery from '../graphql/regionsList.query.gql'
 import {useStore} from 'vuex';
+import { useRoute } from 'vue-router';
 
 export default {
   data() {
@@ -100,22 +101,25 @@ export default {
     };
   },
   setup() {
-    const {result, refetch, fetchMore} = useQuery(videoListQuery);
+    const {result: result1, refetch, fetchMore} = useQuery(videoListQuery);
+    const {result: result2} = useQuery(regionsListQuery);
 
     const store = useStore();
     store.dispatch('filter/sortBy', 'createTime');
     store.dispatch('filter/orderDirection', 'desc');
+    store.dispatch('filter/showPrivate', true);
 
-    const videoList = useResult(result, null, data => data.video); // if query fails we'll get null
+    const videoList = useResult(result1, null, data => data.video); // if query fails we'll get null
+    const regionsList = useResult(result2, null, data => data.region);
 
     return {
       refetch,
       fetchMore,
       videoList, //without using UseResult we would return `result`
+      regionsList,
       track: ref(''),
       sort_by_item: ref({label: 'Creation Date', value: 'createTime'}),
-      countries_item: ref(''),
-      show_private: ref(false),
+      show_private: store.getters['filter/get_showPrivate'],
       date_item: ref(null),
       pageNum: ref(1),
     };
@@ -155,6 +159,7 @@ export default {
   methods: {
     loadMore() {
       this.pageNum++;
+
       console.log(this.$store.getters);
 
       this.fetchMore({
