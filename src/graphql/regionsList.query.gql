@@ -1,0 +1,6 @@
+query regionsList {
+  region{
+    code,
+    name
+  }
+}
