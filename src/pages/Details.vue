@@ -1,6 +1,6 @@
 <template>
   <q-page>
-
+    {{ id }}
     <div class="post_details">
       <div class="container">
 
@@ -95,7 +95,7 @@
 
 
         <!-- CHART -->
-<!--        <chart></chart>-->
+        <!--        <chart></chart>-->
 
       </div>
     </div>
@@ -110,9 +110,12 @@ import Chart from 'components/Chart';
 
 export default defineComponent({
   name: 'PageIndex',
+  props: {
+    id: Number,
+  },
   // extends: Line,
   components: {
-    Chart
+    Chart,
   },
   // mounted() {
   //   this.renderChart({
@@ -142,7 +145,7 @@ export default defineComponent({
   // },
   created() {
     // this.fetchDetails();
-    console.log(this.$route.params)
+    console.log(this.$route.params);
   },
 
   data() {
@@ -172,9 +175,6 @@ export default defineComponent({
     postData() {
       return this.$store.getters['posts/get_posts']
         .find(post => post.id === this.$route.params.id);
-    },
-    parsedDate() {
-      return parseISOString(this.details.created);
     },
   },
 });

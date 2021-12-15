@@ -13,9 +13,7 @@
               </q-date>
             </q-popup-proxy>
           </q-btn>
-          {{ chosen }}
         </div>
-
         <div class="search">
           <q-input outlined v-model="search_text" label="Search"/>
         </div>
@@ -29,31 +27,11 @@
           />
         </div>
 
-
         <div class="prepared_range">
           <q-btn-toggle
             v-model="date_item"
             toggle-color="primary"
-            :options="[
-              {
-                label: '7 days',
-                value: JSON.stringify({
-                  from: days_7, to: today
-                })
-              },
-              {
-                label: '14 days',
-                value: JSON.stringify({
-                  from: days_14, to: today
-                })
-              },
-              {
-                label: '30 days',
-                value: JSON.stringify({
-                  from: days_30, to: today
-                })
-              }
-            ]"
+            :options="options"
           />
         </div>
         <div class="sort_by">
@@ -64,7 +42,6 @@
                     label="Sort By"
                     transition-show="flip-up"
                     transition-hide="flip-down"
-                    @update:model-value="changeSortBy(sort_by_item)"
           ></q-select>
           <q-btn
             size="10px"
@@ -92,40 +69,64 @@
 <script>
 import {ref} from 'vue';
 import {useStore} from 'vuex';
-import {addZero} from 'src/helper';
+import {addZero, currentFilter} from 'src/helper';
 
 export default {
   name: 'PostsFilterDesktop',
+  computed: {
+  },
+  data() {
+    return {
+      options: [
+        {
+          label: '7 days',
+          value: JSON.stringify({
+            from: this.days_7, to: this.today,
+          }),
+        },
+        {
+          label: '14 days',
+          value: JSON.stringify({
+            from: this.days_14, to: this.today,
+          }),
+        },
+        {
+          label: '30 days',
+          value: JSON.stringify({
+            from: this.days_30, to: this.today,
+          }),
+        },
+      ],
+    };
+  },
 
   methods: {
-    changeSortBy(val) {
-      this.$store.dispatch('filter/sortBy', val.value);
-    },
     changeOrder() {
       this.$store.dispatch('filter/orderDirection', this.$store.getters['filter/get_orderDirection'] === 'desc' ? 'asc' : 'desc');
     },
-    changePrivateOnly(val) {
-      this.$store.dispatch('filter/showPrivate', !val);
-    },
   },
-
-  computed: {
-    showPrivateStatus() {
-      return this.$store.getters['filter/get_showPrivate'];
-    },
-  },
-
   watch: {
     'show_private': function (newVal) {
       this.$store.dispatch('filter/showPrivate', newVal);
+      this.$router.push({
+        query: Object.assign({}, this.$route.query, {showPrivate: newVal}),
+      });
+    },
+    'sort_by_item': function (newVal) {
+      this.$store.dispatch('filter/sortBy', newVal.value);
+      this.$router.push({
+        query: Object.assign({}, this.$route.query, {sortBy: newVal.value}),
+      });
     },
     'chosen': function (newVal) {
       this.$store.dispatch('filter/range', newVal);
+      this.$router.push({
+        query: Object.assign({}, this.$route.query, {range: JSON.stringify(newVal)}),
+      });
     },
     'date_item': function (newVal) {
       this.chosen = JSON.parse(newVal);
       this.proxyDate = JSON.parse(newVal);
-      // this.$store.dispatch('filter/range', newVal);
     },
     'country': function (newVal) {
       this.$store.dispatch('filter/region', newVal);
@@ -147,9 +148,6 @@ export default {
   setup(props) {
     const store = useStore();
     const country = ref(null);
-
-    const countries = props.countries;
-    console.log(countries);
 
     const d = new Date();
     const today = new Date().toJSON().slice(0, 10).replace(/-/g, '/');

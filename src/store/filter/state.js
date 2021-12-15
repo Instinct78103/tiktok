@@ -3,7 +3,7 @@ export default function () {
     model_range: null,
     model_search: '',
     model_sortBy: '',
-    model_showPrivate: false,
+    model_showPrivate: true,
     model_region: '',
 
     order_direction: 'desc',

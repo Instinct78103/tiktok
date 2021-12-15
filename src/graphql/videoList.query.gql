@@ -3,7 +3,8 @@ query videoList (
   $order: String,
   $order_direction: order_direction,
   $offset: Int,
-  $q_search: String
+  $q_search: String,
+
 ) {
   video(
     limit: $limit,

@@ -4,14 +4,14 @@ const routes = [
     component: () => import('layouts/MainLayout.vue'),
     children: [
       {
-        path: '',
+        path: '/',
         name: 'Videos',
         alias: '/videos',
         props: true,
         component: () => import( /* webpackChunkName: "Videos" */ 'pages/Videos.vue'),
       },
       {
-        path: '/video/:id',
+        path: '/video-:id',
         name: 'VideoDetails',
         props: true,
         component: () => import(/* webpackChunkName: "VideoDetails" */ 'pages/Details.vue'),
@@ -54,7 +54,6 @@ const routes = [
       },
     ],
   },
-
 
   // Always leave this as last one,
   // but you can also remove it

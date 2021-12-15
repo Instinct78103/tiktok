@@ -73,9 +73,9 @@ import VideoPost from 'components/VideoPost';
 
 import {getTimeOnly} from 'src/helper';
 import videoListQuery from '../graphql/videoList.query.gql';
-import regionsListQuery from '../graphql/regionsList.query.gql'
+import regionsListQuery from '../graphql/regionsList.query.gql';
 import {useStore} from 'vuex';
-import { useRoute } from 'vue-router';
+import {useRoute} from 'vue-router';
 
 export default {
   data() {
@@ -92,24 +92,29 @@ export default {
         {label: 'Views', value: 'playCount'},
         {label: 'Shares', value: 'shareCount'},
       ],
-      countries: [
-        'USA',
-        'UK',
-        'Russia',
-        'Germany',
-      ],
+      countries: this.regionsList,
     };
   },
   setup() {
+
+    const router = useRoute();
+    const store = useStore();
+
     const {result: result1, refetch, fetchMore} = useQuery(videoListQuery);
     const {result: result2} = useQuery(regionsListQuery);
 
-    const store = useStore();
+    console.log(result1)
+    console.log(result2)
+
+
+    const videoList = useResult(result1, null, data => data.video); // if query fails we'll get null
+    // console.log(videoList)
+
     store.dispatch('filter/sortBy', 'createTime');
     store.dispatch('filter/orderDirection', 'desc');
     store.dispatch('filter/showPrivate', true);
 
-    const videoList = useResult(result1, null, data => data.video); // if query fails we'll get null
+
     const regionsList = useResult(result2, null, data => data.region);
 
     return {
@@ -210,6 +215,9 @@ export default {
   computed: {
     isMobile() {
       return this.innerWidth < 1200;
+    },
+    realCountries() {
+
     },
     get_pageSize() {
       return this.$store.getters['filter/get_limit'];
