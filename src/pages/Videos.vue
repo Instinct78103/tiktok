@@ -23,6 +23,8 @@
       :today_date="today_date"
     />
 
+    <pre>{{ getFilterObject }}</pre>
+
     <audio ref="audioPlayer">
       <source :src="currentTrack">
     </audio>
@@ -47,7 +49,6 @@
     <!--  POSTS  -->
     <div class="posts-list">
       <div class="container">
-        <!--        <button @click="refetch({limit:2, order: 'diggCount desc'})">Click Me!</button>-->
         <video-post
           v-for="item in videoList"
           :now-playing="currentTrack"
@@ -76,6 +77,7 @@ import videoListQuery from '../graphql/videoList.query.gql';
 import regionsListQuery from '../graphql/regionsList.query.gql';
 import {useStore} from 'vuex';
 import {useRoute} from 'vue-router';
+import {pageNum} from 'src/store/filter/actions';
 
 export default {
   data() {
@@ -103,19 +105,11 @@ export default {
     const {result: result1, refetch, fetchMore} = useQuery(videoListQuery);
     const {result: result2} = useQuery(regionsListQuery);
 
-    console.log(result1)
-    console.log(result2)
-
-
     const videoList = useResult(result1, null, data => data.video); // if query fails we'll get null
-    // console.log(videoList)
-
-    store.dispatch('filter/sortBy', 'createTime');
-    store.dispatch('filter/orderDirection', 'desc');
-    store.dispatch('filter/showPrivate', true);
-
-
     const regionsList = useResult(result2, null, data => data.region);
+
+    console.log('comp: videos');
+    // store.dispatch('filter/sortBy', 'createTime');
 
     return {
       refetch,
@@ -123,7 +117,8 @@ export default {
       videoList, //without using UseResult we would return `result`
       regionsList,
       track: ref(''),
-      sort_by_item: ref({label: 'Creation Date', value: 'createTime'}),
+      // sort_by_item: ref({label: 'Creation Date', value: 'createTime'}),
+      sort_by_item: store.getters['filter/get_sortBy'],
       show_private: store.getters['filter/get_showPrivate'],
       date_item: ref(null),
       pageNum: ref(1),
@@ -136,59 +131,61 @@ export default {
     ButtonFilters,
   },
   watch: {
-    currentTrack(newCurrentTrack, oldCurrentTrack) {
+    currentTrack(newTrack, oldTrack) {
       const a = this.$refs.audioPlayer;
       a.load();
-      if (newCurrentTrack) {
+      if (newTrack) {
         a.play();
       }
     },
     '$store.state.filter.model_sortBy': function (val) {
-      this.refetch({
-        limit: this.$store.getters['filter/get_limit'],
-        order: val,
-        order_direction: this.$store.getters['filter/get_orderDirection'],
-      });
+      this.$store.dispatch('filter/pageNum', 1);
+      this.refetch(this.getFilterObject);
     },
     '$store.state.filter.order_direction': function (val) {
-      this.refetch({
-        limit: this.$store.getters['filter/get_limit'],
-        order: this.$store.getters['filter/get_sortBy'],
-        order_direction: val,
-      });
+      this.$store.dispatch('filter/pageNum', 1);
+      this.refetch(this.getFilterObject);
     },
-    'pageNum': function (val) {
-      this.$store.dispatch('filter/pageNum', val);
+    '$store.state.filter.model_region': function (val) {
+      this.$store.dispatch('filter/pageNum', 1);
+      this.refetch(this.getFilterObject);
+    },
+    '$store.state.filter.pageNum': function (newVal, oldVal) {
+      if (newVal > oldVal) {
+        this.fetchMore({
+          query: videoListQuery,
+          variables: this.getFilterObject,
+          updateQuery: (previousResult, {fetchMoreResult}) => {
+            if (!fetchMoreResult) return previousResult;
+            return {
+              ...previousResult,
+              video: [
+                ...previousResult.video,
+                ...fetchMoreResult.video,
+              ],
+            };
+          },
+        });
+      }
     },
   },
   methods: {
-    loadMore() {
-      this.pageNum++;
+    getParamsFromURL() {
 
-      console.log(this.$store.getters);
+      const params = this.$route.query;
+      console.log(params);
+      if (params.hasOwnProperty('sortBy')) {
+        this.$store.dispatch('filter/sortBy', params.sortBy);
+      } else {
+        this.$store.dispatch('filter/sortBy', 'createTime');
+      }
 
-      this.fetchMore({
-        query: videoListQuery,
-        variables: {
-          offset: (this.pageNum * this.get_pageSize),
-        },
-        updateQuery: (previousResult, {fetchMoreResult}) => {
-          if (!fetchMoreResult) return previousResult;
-          return {
-            ...previousResult,
-            video: [
-              ...previousResult.video,
-              ...fetchMoreResult.video,
-            ],
-          };
-        },
-      });
     },
     getNextPosts() {
       window.onscroll = () => {
         let bottomOfWindow = document.documentElement.scrollTop + window.innerHeight === document.documentElement.offsetHeight;
         if (bottomOfWindow) {
-          this.loadMore();
+          this.$store.dispatch('filter/pageNum', this.$store.getters['filter/get_pageNum'] + 1);
         }
       };
     },
@@ -196,14 +193,9 @@ export default {
       this.currentTrack = x;
     },
     getTimeOnly,
-    sort(e) {
-      if (e.target.dataset.filter === this.sort_is_on) {
-        this.sort_direction = this.sort_direction === 'asc' ? 'desc' : 'asc';
-      }
-      this.sort_is_on = e.target.dataset.filter;
-    },
   },
   created() {
+    this.getParamsFromURL();
     this.innerWidth = window.innerWidth;
     window.addEventListener('resize', () => {
       this.innerWidth = window.innerWidth;
@@ -213,19 +205,26 @@ export default {
     this.getNextPosts();
   },
   computed: {
+    getFilterObject() {
+      const target = JSON.parse(JSON.stringify(this.$store.getters));
+      return Object.assign({}, {
+        limit: target['filter/get_limit'],
+        order: target['filter/get_sortBy'],
+        order_direction: target['filter/get_orderDirection'],
+        pageNum: target['filter/get_pageNum'],
+        range: target['filter/get_range'],
+        search_region: target['filter/get_region'].value,
+        search_q: target['filter/get_search'],
+        offset: (target['filter/get_pageNum'] - 1) * target['filter/get_limit'],
+        // showPrivate: target['filter/get_showPrivate'],
+      });
+    },
     isMobile() {
       return this.innerWidth < 1200;
-    },
-    realCountries() {
-
-    },
-    get_pageSize() {
-      return this.$store.getters['filter/get_limit'];
     },
   },
 };
 </script>
 <style lang="scss" scoped>
 @import 'src/css/components/table_heading';
-
 </style>

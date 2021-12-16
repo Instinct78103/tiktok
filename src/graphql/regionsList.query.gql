@@ -1,6 +1,6 @@
 query regionsList {
   region{
-    code,
-    name
+    value: code,
+    label: name
   }
 }

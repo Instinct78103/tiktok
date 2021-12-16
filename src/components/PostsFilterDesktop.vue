@@ -63,7 +63,6 @@
       </div>
     </div>
   </div>
-  <pre>{{ this.$store.state }}</pre>
 </template>
 
 <script>
@@ -73,8 +72,6 @@ import {addZero, currentFilter} from 'src/helper';
 
 export default {
   name: 'PostsFilterDesktop',
-  computed: {
-  },
   data() {
     return {
       options: [
@@ -103,6 +100,9 @@ export default {
   methods: {
     changeOrder() {
       this.$store.dispatch('filter/orderDirection', this.$store.getters['filter/get_orderDirection'] === 'desc' ? 'asc' : 'desc');
+      this.$router.push({
+        query: Object.assign({}, this.$route.query, {sortDirection: this.$store.getters['filter/get_orderDirection']}),
+      });
     },
   },
   watch: {
@@ -124,12 +124,15 @@ export default {
         query: Object.assign({}, this.$route.query, {range: JSON.stringify(newVal)}),
       });
     },
-    'date_item': function (newVal) {
+    'date_item': function (newVal) { //all the data is directed to `chosen` and mutated there (see above)
       this.chosen = JSON.parse(newVal);
       this.proxyDate = JSON.parse(newVal);
     },
     'country': function (newVal) {
       this.$store.dispatch('filter/region', newVal);
+      this.$router.push({
+        query: Object.assign({}, this.$route.query, {region: newVal.value}),
+      });
     },
 
   },
@@ -145,7 +148,7 @@ export default {
     today_date: String,
   },
 
-  setup(props) {
+  setup() {
     const store = useStore();
     const country = ref(null);
 
