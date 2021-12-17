@@ -122,7 +122,7 @@ export default {
     if (params.hasOwnProperty('sortDirection')) {
       store.dispatch('filter/orderDirection', params.sortDirection);
     } else {
-      store.dispatch('filter/region', 'desc');
+      store.dispatch('filter/orderDirection', 'desc');
     }
 
     //Second, we parse the filter object from vuex (later it'll be 'variables' in apollo graphql )
