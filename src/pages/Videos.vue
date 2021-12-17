@@ -1,8 +1,20 @@
 <template>
   <q-page>
 
+    <q-circular-progress
+      v-if="loading"
+      indeterminate
+      size="90px"
+      :thickness="0.2"
+      color="lime"
+      center-color="grey-8"
+      track-color="transparent"
+      class="q-ma-md"
+      style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; margin: auto"
+    />
+
     <posts-filter-mobile
-      v-if="isMobile"
+      v-else-if="isMobile && !loading"
       :date_item="date_item"
       :search_text="search_text"
       :show_private="show_private"
@@ -12,7 +24,7 @@
     />
 
     <posts-filter-desktop
-      v-else
+      v-else-if="!isMobile && !loading"
       :countries="regionsList"
       :date_item="date_item"
       :search_text="search_text"
@@ -23,14 +35,12 @@
       :today_date="today_date"
     />
 
-    <pre>{{ getFilterObject }}</pre>
-
     <audio ref="audioPlayer">
       <source :src="currentTrack">
     </audio>
 
     <!--  TABLE HEADING  -->
-    <div class="table_heading" v-if="!isMobile">
+    <div class="table_heading" v-if="!isMobile && !loading">
       <div class="container">
         <div class="th">
           <span class="video_content">Video Content</span>
@@ -88,37 +98,72 @@ export default {
       search_text: '',
       sort_is_on: true,
       sort_direction: 'desc',
-      sort_by: [
-        {label: 'Creation Date', value: 'createTime'},
-        {label: 'Likes', value: 'diggCount'},
-        {label: 'Views', value: 'playCount'},
-        {label: 'Shares', value: 'shareCount'},
-      ],
-      countries: this.regionsList,
     };
   },
   setup() {
-
     const router = useRoute();
     const store = useStore();
 
-    const {result: result1, refetch, fetchMore} = useQuery(videoListQuery);
+    //First, we look at the URL params
+    const params = router.query;
+    console.log(params);
+    if (params.hasOwnProperty('sortBy')) {
+      store.dispatch('filter/sortBy', params.sortBy);
+    } else {
+      store.dispatch('filter/sortBy', 'createTime');
+    }
+
+    if (params.hasOwnProperty('region')) {
+      store.dispatch('filter/region', params.region);
+    } else {
+      store.dispatch('filter/region', '');
+    }
+
+    if (params.hasOwnProperty('sortDirection')) {
+      store.dispatch('filter/orderDirection', params.sortDirection);
+    } else {
+      store.dispatch('filter/region', 'desc');
+    }
+
+    //Second, we parse the filter object from vuex (later it'll be 'variables' in apollo graphql )
+    const target = JSON.parse(JSON.stringify(store.getters));
+    const initVariables = Object.assign({}, {
+      limit: target['filter/get_limit'],
+      order: target['filter/get_sortBy'],
+      order_direction: target['filter/get_orderDirection'],
+      pageNum: target['filter/get_pageNum'],
+      range: target['filter/get_range'],
+      search_region: target['filter/get_region'],
+      search_q: target['filter/get_search'],
+      offset: (target['filter/get_pageNum'] - 1) * target['filter/get_limit'],
+      // showPrivate: target['filter/get_showPrivate'],
+    });
+
+    //Init query
+    const {result: result1, refetch, fetchMore, loading} = useQuery(videoListQuery, initVariables);
     const {result: result2} = useQuery(regionsListQuery);
 
     const videoList = useResult(result1, null, data => data.video); // if query fails we'll get null
     const regionsList = useResult(result2, null, data => data.region);
 
-    console.log('comp: videos');
-    // store.dispatch('filter/sortBy', 'createTime');
+    const sort_by = [
+      {label: 'Creation Date', value: 'createTime'},
+      {label: 'Likes', value: 'diggCount'},
+      {label: 'Views', value: 'playCount'},
+      {label: 'Shares', value: 'shareCount'},
+    ];
+
+    const sort_by_item = ref(sort_by.find(item => item.value === store.getters['filter/get_sortBy']));
 
     return {
       refetch,
       fetchMore,
       videoList, //without using UseResult we would return `result`
       regionsList,
+      loading,
       track: ref(''),
-      // sort_by_item: ref({label: 'Creation Date', value: 'createTime'}),
-      sort_by_item: store.getters['filter/get_sortBy'],
+      sort_by,
+      sort_by_item,
       show_private: store.getters['filter/get_showPrivate'],
       date_item: ref(null),
       pageNum: ref(1),
@@ -180,6 +225,12 @@ export default {
         this.$store.dispatch('filter/sortBy', 'createTime');
       }
 
+      if (params.hasOwnProperty('region')) {
+        this.$store.dispatch('filter/region', params.region);
+      } else {
+        this.$store.dispatch('filter/region', '');
+      }
+
     },
     getNextPosts() {
       window.onscroll = () => {
@@ -195,7 +246,7 @@ export default {
     getTimeOnly,
   },
   created() {
-    this.getParamsFromURL();
+    // this.getParamsFromURL();
     this.innerWidth = window.innerWidth;
     window.addEventListener('resize', () => {
       this.innerWidth = window.innerWidth;
@@ -213,7 +264,7 @@ export default {
         order_direction: target['filter/get_orderDirection'],
         pageNum: target['filter/get_pageNum'],
         range: target['filter/get_range'],
-        search_region: target['filter/get_region'].value,
+        search_region: target['filter/get_region'],
         search_q: target['filter/get_search'],
         offset: (target['filter/get_pageNum'] - 1) * target['filter/get_limit'],
         // showPrivate: target['filter/get_showPrivate'],

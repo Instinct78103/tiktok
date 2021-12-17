@@ -15,7 +15,22 @@
           </q-btn>
         </div>
         <div class="search">
-          <q-input outlined v-model="search_text" label="Search"/>
+          <q-form
+            class="flex"
+            @submit.prevent="searchInit"
+          >
+            <q-input
+              style="width:calc(100% - 56px)"
+              outlined
+              v-model="search_text"
+              label="Search"
+            />
+            <q-btn
+              icon="fa fa-search"
+              type="submit"
+              color="primary"
+            />
+          </q-form>
         </div>
 
         <div class="toggle_private">
@@ -35,13 +50,14 @@
           />
         </div>
         <div class="sort_by">
-          <q-select class="sort_by_select"
-                    standart
-                    v-model="sort_by_item"
-                    :options="sort_by"
-                    label="Sort By"
-                    transition-show="flip-up"
-                    transition-hide="flip-down"
+          <q-select
+            class="sort_by_select"
+            standart
+            v-model="sort_by_item"
+            :options="sort_by"
+            label="Sort By"
+            transition-show="flip-up"
+            transition-hide="flip-down"
           ></q-select>
           <q-btn
             size="10px"
@@ -98,6 +114,9 @@ export default {
   },
 
   methods: {
+    searchInit() {
+      console.log(1);
+    },
     changeOrder() {
       this.$store.dispatch('filter/orderDirection', this.$store.getters['filter/get_orderDirection'] === 'desc' ? 'asc' : 'desc');
       this.$router.push({
@@ -129,7 +148,8 @@ export default {
       this.proxyDate = JSON.parse(newVal);
     },
     'country': function (newVal) {
-      this.$store.dispatch('filter/region', newVal);
+      console.log(newVal.value);
+      this.$store.dispatch('filter/region', newVal.value);
       this.$router.push({
         query: Object.assign({}, this.$route.query, {region: newVal.value}),
       });
@@ -148,9 +168,9 @@ export default {
     today_date: String,
   },
 
-  setup() {
+  setup(props) {
     const store = useStore();
-    const country = ref(null);
+    const country = ref(props.countries.find(item => item.value.toLowerCase() === store.getters['filter/get_region'].toLowerCase()));
 
     const d = new Date();
     const today = new Date().toJSON().slice(0, 10).replace(/-/g, '/');
