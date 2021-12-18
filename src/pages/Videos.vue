@@ -33,8 +33,8 @@
       :sort_by_item="sort_by_item"
       :sort_direction="sort_direction"
       :today_date="today_date"
+      :search_init="refetch"
     />
-
     <audio ref="audioPlayer">
       <source :src="currentTrack">
     </audio>
@@ -65,7 +65,6 @@
           :key="item.id"
           :post="item"
           :is-mobile="isMobile"
-          :data-test="item"
           @triggerParent="playMusic($event)"
         />
       </div>
@@ -104,26 +103,42 @@ export default {
     const router = useRoute();
     const store = useStore();
 
+    const sort_by = [
+      {label: 'Creation Date', value: 'createTime', alias: 'date'},
+      {label: 'Likes', value: 'diggCount', alias: 'likes'},
+      {label: 'Views', value: 'playCount', alias: 'views'},
+      {label: 'Shares', value: 'shareCount', alias: 'shares'},
+    ];
+
+    const sort_by_item = ref(sort_by.find(item => item.value === store.getters['filter/get_sortBy']));
+
     //First, we look at the URL params
     const params = router.query;
-    console.log(params);
-    if (params.hasOwnProperty('sortBy')) {
-      store.dispatch('filter/sortBy', params.sortBy);
-    } else {
-      store.dispatch('filter/sortBy', 'createTime');
-    }
 
-    if (params.hasOwnProperty('region')) {
-      store.dispatch('filter/region', params.region);
-    } else {
-      store.dispatch('filter/region', '');
-    }
+    /**
+     * sort_by
+     */
+    // const item_by_alias = params.hasOwnProperty('sort_by')
+    //   ? sort_by.find(item => item.alias.toLowerCase() === params.sort_by.toLowerCase())
+    //   : sort_by.find(item => item.alias.toLowerCase() === 'date');
+    // sort_by_item.value = item_by_alias;
+    // store.dispatch('filter/sortBy', item_by_alias.value);
 
-    if (params.hasOwnProperty('sortDirection')) {
-      store.dispatch('filter/orderDirection', params.sortDirection);
-    } else {
-      store.dispatch('filter/orderDirection', 'desc');
-    }
+    const item_by_alias = params.hasOwnProperty('sort_by')
+      ? sort_by.find(item => item.alias.toLowerCase() === params.sort_by.toLowerCase())
+      : sort_by.find(item => item.alias.toLowerCase() === 'date');
+    sort_by_item.value = item_by_alias;
+    store.dispatch('filter/sortBy', item_by_alias.value);
+
+    /**
+     * region
+     */
+    store.dispatch('filter/region', params.hasOwnProperty('region') ? params.region : '');
+
+    /**
+     * sortDirection
+     */
+    store.dispatch('filter/orderDirection', params.hasOwnProperty('sortDirection') ? params.sortDirection : 'desc');
 
     //Second, we parse the filter object from vuex (later it'll be 'variables' in apollo graphql )
     const target = JSON.parse(JSON.stringify(store.getters));
@@ -145,15 +160,6 @@ export default {
 
     const videoList = useResult(result1, null, data => data.video); // if query fails we'll get null
     const regionsList = useResult(result2, null, data => data.region);
-
-    const sort_by = [
-      {label: 'Creation Date', value: 'createTime'},
-      {label: 'Likes', value: 'diggCount'},
-      {label: 'Views', value: 'playCount'},
-      {label: 'Shares', value: 'shareCount'},
-    ];
-
-    const sort_by_item = ref(sort_by.find(item => item.value === store.getters['filter/get_sortBy']));
 
     return {
       refetch,
@@ -215,23 +221,6 @@ export default {
     },
   },
   methods: {
-    getParamsFromURL() {
-
-      const params = this.$route.query;
-      console.log(params);
-      if (params.hasOwnProperty('sortBy')) {
-        this.$store.dispatch('filter/sortBy', params.sortBy);
-      } else {
-        this.$store.dispatch('filter/sortBy', 'createTime');
-      }
-
-      if (params.hasOwnProperty('region')) {
-        this.$store.dispatch('filter/region', params.region);
-      } else {
-        this.$store.dispatch('filter/region', '');
-      }
-
-    },
     getNextPosts() {
       window.onscroll = () => {
         let bottomOfWindow = document.documentElement.scrollTop + window.innerHeight === document.documentElement.offsetHeight;
@@ -246,7 +235,6 @@ export default {
     getTimeOnly,
   },
   created() {
-    // this.getParamsFromURL();
     this.innerWidth = window.innerWidth;
     window.addEventListener('resize', () => {
       this.innerWidth = window.innerWidth;

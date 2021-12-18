@@ -3,7 +3,7 @@ query videoList (
   $order: String,
   $order_direction: order_direction,
   $offset: Int,
-  $q_search: String,
+  $search_q: String,
   $search_region: String
 ) {
   video(
@@ -11,7 +11,7 @@ query videoList (
     order: $order,
     order_direction: $order_direction,
     offset: $offset,
-    search_q: $q_search,
+    search_q: $search_q,
     search_region: $search_region
   ){  # example, 10, `playCount desc`
 

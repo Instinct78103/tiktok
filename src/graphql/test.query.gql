@@ -1,0 +1,14 @@
+query videoList($search_q: String) {
+  video(search_q: $search_q) {
+    id
+    desc #title
+    author {
+      uniqueId #tiktok_name
+      region
+    }
+
+    playCount #views
+    diggCount #likes
+    shareCount #shares
+  }
+}

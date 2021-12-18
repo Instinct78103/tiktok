@@ -17,9 +17,10 @@
         <div class="search">
           <q-form
             class="flex"
-            @submit.prevent="searchInit"
+            @submit.prevent="searchInit($event)"
           >
             <q-input
+              id="search"
               style="width:calc(100% - 56px)"
               outlined
               v-model="search_text"
@@ -79,12 +80,15 @@
       </div>
     </div>
   </div>
+  <pre v-if="this.show_search_result">{{testList}}</pre>
 </template>
 
 <script>
 import {ref} from 'vue';
 import {useStore} from 'vuex';
-import {addZero, currentFilter} from 'src/helper';
+import {useQuery, useResult} from '@vue/apollo-composable';
+// import testQuery from 'src/graphql/test.query.gql';
+import testQuery from 'src/graphql/videoList.query.gql';
 
 export default {
   name: 'PostsFilterDesktop',
@@ -115,7 +119,16 @@ export default {
 
   methods: {
     searchInit() {
-      console.log(1);
+      const that = this;
+      setTimeout(function (){
+        that.refetch({
+          "limit": 10,
+          "search_q": that.search_text,
+          "offset": 0
+        })
+        that.show_search_result = that.search_text !== ''
+      }, 2000)
+
     },
     changeOrder() {
       this.$store.dispatch('filter/orderDirection', this.$store.getters['filter/get_orderDirection'] === 'desc' ? 'asc' : 'desc');
@@ -134,7 +147,7 @@ export default {
     'sort_by_item': function (newVal) {
       this.$store.dispatch('filter/sortBy', newVal.value);
       this.$router.push({
-        query: Object.assign({}, this.$route.query, {sortBy: newVal.value}),
+        query: Object.assign({}, this.$route.query, {sort_by: newVal.alias}),
       });
     },
     'chosen': function (newVal) {
@@ -148,7 +161,6 @@ export default {
       this.proxyDate = JSON.parse(newVal);
     },
     'country': function (newVal) {
-      console.log(newVal.value);
       this.$store.dispatch('filter/region', newVal.value);
       this.$router.push({
         query: Object.assign({}, this.$route.query, {region: newVal.value}),
@@ -166,9 +178,16 @@ export default {
     sort_direction: String,
     show_private: Boolean,
     today_date: String,
+    search_init: Function
   },
 
   setup(props) {
+
+    const {result: test, refetch, fetchMore, loading} = useQuery(testQuery);
+    const testList = useResult(test, null, data => data.video);
+    console.log(testList)
+    const show_search_result = ref(false)
+
     const store = useStore();
     const country = ref(props.countries.find(item => item.value.toLowerCase() === store.getters['filter/get_region'].toLowerCase()));
 
@@ -187,6 +206,10 @@ export default {
 
 
     return {
+      loading,
+      show_search_result,
+      refetch,
+      testList,
       country,
       chosen,
       proxyDate,
