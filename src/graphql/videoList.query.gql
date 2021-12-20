@@ -5,6 +5,9 @@ query videoList (
   $offset: Int,
   $search_q: String,
   $search_region: String
+  $search_private: Boolean,
+  $date_start: String,
+  $date_end: String
 ) {
   video(
     limit: $limit,
@@ -12,7 +15,10 @@ query videoList (
     order_direction: $order_direction,
     offset: $offset,
     search_q: $search_q,
-    search_region: $search_region
+    search_region: $search_region,
+    search_private: $search_private,
+    date_start: $date_start,
+    date_end: $date_end
   ){  # example, 10, `playCount desc`
 
     id

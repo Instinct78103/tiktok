@@ -1,126 +1,139 @@
 # This file was generated based on ".graphqlconfig". Do not edit manually.
 
 schema {
-  query: Query
+    query: Query
 }
 
 type Author {
-  "author added time"
-  addedTime(format: String): String
-  commentCountAvg: Float
-  "author image URL"
-  cover_url: String
-  "author create time"
-  createTime(format: String): String
-  diggCount: String
-  diggCountAvg: Float
-  engagementAvg: Float
-  followerCount: String
-  followerCountDiff1wk: String
-  followingCount: String
-  heartCount: String
-  id: Int
-  "last post time"
-  lastPostCreateTime(format: String): String
-  nickname: String
-  playCountAvg: Float
-  post_cnt: Int
-  post_views_sum: String
-  post_views_sum_Diff1wk: String
-  "author tiktok profile URL"
-  profile_url: String
-  region: String
-  shareCountAvg: Float
-  signature: String
-  tiktok_id: String
-  uniqueId: String
-  verified: Int
-  videoCount: String
-  "stats update time/hour"
-  ymdh(format: String): String
+    "author added time"
+    addedTime(format: String): String
+    commentCountAvg: Float
+    "author image URL"
+    cover_url: String
+    "author create time"
+    createTime(format: String): String
+    diggCount: String
+    diggCountAvg: Float
+    engagementAvg: Float
+    followerCount: String
+    followerCountDiff1wk: String
+    followingCount: String
+    heartCount: String
+    id: Int
+    "last post time"
+    lastPostCreateTime(format: String): String
+    nickname: String
+    playCountAvg: Float
+    post_cnt: Int
+    post_views_sum: String
+    post_views_sum_Diff1wk: String
+    "author tiktok profile URL"
+    profile_url: String
+    region: String
+    shareCountAvg: Float
+    signature: String
+    tiktok_id: String
+    uniqueId: String
+    verified: Int
+    videoCount: String
+    "stats update time/hour"
+    ymdh(format: String): String
 }
 
 type Graph {
-  diff: [String]
-  ds1: [String]
-  ds2: [String]
-  labels: [String]
+    diff: [String]
+    ds1: [String]
+    ds2: [String]
+    labels: [String]
 }
 
 type Music {
-  authorName: String
-  coverMedium: String
-  "music image URL"
-  cover_url: String
-  id: Int
-  "music tiktok profile URL"
-  music_url: String
-  original: Boolean
-  playUrl: String
-  post_cnt: Int
-  post_views_sum: String
-  tiktok_id: String
-  title: String
+    authorName: String
+    coverMedium: String
+    "music image URL"
+    cover_url: String
+    id: Int
+    "music tiktok profile URL"
+    music_url: String
+    original: Boolean
+    playUrl: String
+    post_cnt: Int
+    post_views_sum: String
+    tiktok_id: String
+    title: String
 }
 
 type Query {
-  author(id: Int!): Author
-  hello: String
-  region: [Region]
-  video(id: Int, limit: Int = 10, offset: Int = 0, order: String = "createTime", order_direction: order_direction = desc, search_q: String, search_region: String): [Video]
+    author(id: Int!): Author
+    hello: String
+    region: [Region]
+    video(
+        date_end: String,
+        date_start: String,
+        "Show last X days. If no specific date_start and date_end specified"
+        days: Int,
+        id: Int,
+        limit: Int = 10,
+        offset: Int = 0,
+        order: String = "createTime",
+        order_direction: order_direction = desc,
+        search_private: Boolean,
+        search_q: String,
+        search_region: String
+    ): [Video]
 }
 
 type Region {
-  code: String
-  name: String
+    code: String
+    name: String
 }
 
 type Video {
-  author: Author
-  author_post_cnt: Int
-  author_post_views_sum: String
-  commentCount: Int
-  "video image URL"
-  cover_url: String
-  "video create time"
-  createTime(format: String): String
-  desc: String
-  diggCount: Int
-  duration: Int
-  engagement: Float
-  graph(days: Int!, range: Range, total: Int!): Graph
-  growthDuration: Float
-  id: Int
-  music: Music
-  music_post_cnt: Int
-  music_post_views_sum: String
-  nickname: String
-  playCount: String
-  playCount_1wk: Int
-  shareCount: Int
-  statusCode: Int
-  test_list: [String]
-  tiktok_id: String
-  trending: Float
-  uniqueId: String
-  "video tiktok profile URL"
-  video_url: String
-  "stats update time/hour"
-  ymdh(format: String): String
+    author: Author
+    author_post_cnt: Int
+    author_post_views_sum: String
+    commentCount: Int
+    "video image URL"
+    cover_url: String
+    "video create time"
+    createTime(format: String): String
+    desc: String
+    diggCount: Int
+    duration: Int
+    engagement: Float
+    graph(days: Int!, range: Range, total: Int!): Graph
+    growthDuration: Float
+    id: Int
+    music: Music
+    music_post_cnt: Int
+    music_post_views_sum: String
+    nickname: String
+    playCount: String
+    playCount_1wk: Int
+    shareCount: Int
+    statusCode: Int
+    test_list: [String]
+    tiktok_id: String
+    trending: Float
+    uniqueId: String
+    "video tiktok profile URL"
+    video_url: String
+    "stats update time/hour"
+    ymdh(format: String): String
 }
 
 "Time range"
 enum Range {
-  "Daily"
-  day
-  "Hourly"
-  hour
+    "Daily"
+    day
+    "Hourly"
+    hour
 }
 
 "Sort direction"
 enum order_direction {
-  "ASC"
-  asc
-  "DESC"
-  desc
+    "ASC"
+    asc
+    "DESC"
+    desc
 }
