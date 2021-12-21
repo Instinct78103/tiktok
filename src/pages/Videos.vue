@@ -115,6 +115,15 @@ export default {
     const params = router.query;
 
     /**
+     * days
+     */
+    const date_item = params.hasOwnProperty('days')
+      ? parseInt(params.days)
+      : null;
+    store.dispatch('filter/days', date_item);
+
+
+    /**
      * sort_by
      */
     const item_by_alias = params.hasOwnProperty('sort_by')
@@ -149,6 +158,7 @@ export default {
     //Second, we parse the filter object from vuex (later it'll be 'variables' in apollo graphql )
     const target = JSON.parse(JSON.stringify(store.getters));
     const initVariables = Object.assign({}, {
+      days: target['filter/get_days'],
       limit: target['filter/get_limit'],
       order: target['filter/get_sortBy'],
       order_direction: target['filter/get_orderDirection'],
@@ -160,7 +170,6 @@ export default {
       offset: (target['filter/get_pageNum'] - 1) * target['filter/get_limit'],
       search_private: target['filter/get_showPrivate'],
     });
-    console.log(initVariables)
 
     //Init query
     const {result: result1, refetch, fetchMore, loading} = useQuery(videoListQuery, initVariables);
@@ -180,7 +189,7 @@ export default {
       sort_by,
       sort_by_item,
       show_private,
-      date_item: ref(null),
+      date_item,
       pageNum: ref(1),
       search_text,
     };
@@ -200,10 +209,34 @@ export default {
       }
     },
 
-    '$store.state.filter.model_range': function (val) {
-      console.log(this.getFilterObject)
+    '$store.state.filter.model_range': function (newVal, prevVal) {
       this.$store.dispatch('filter/pageNum', 1);
       this.refetch(this.getFilterObject);
+
+      if (newVal !== null) {
+        this.$router.push({
+          query: Object.assign({}, this.$route.query, {
+            date_start: this.getFilterObject.date_start,
+            date_end: this.getFilterObject.date_end,
+          }),
+        });
+
+        const query = Object.assign({}, this.$route.query);
+        delete query.days;
+        this.$router.replace({ query });
+
+      }
+    },
+    '$store.state.filter.days': function (val) {
+      this.$store.dispatch('filter/pageNum', 1);
+      this.refetch(this.getFilterObject);
+
+      if (val !== null) {
+        this.$router.push({
+          query: Object.assign({}, this.$route.query, {days: this.getFilterObject.days}),
+        });
+      }
+
     },
 
     '$store.state.filter.model_sortBy': function (val) {
@@ -271,14 +304,17 @@ export default {
   computed: {
     getFilterObject() {
       const target = JSON.parse(JSON.stringify(this.$store.getters));
+      const rangeIsObject = target['filter/get_range'] !== null && typeof target['filter/get_range'] === 'object';
+
       return Object.assign({}, {
+        days: target['filter/get_days'],
         limit: target['filter/get_limit'],
         order: target['filter/get_sortBy'],
         order_direction: target['filter/get_orderDirection'],
         pageNum: target['filter/get_pageNum'],
         // range: target['filter/get_range'],
-        date_start: target['filter/get_range']?.from?.replace(/\//g, '-') || null,
-        date_end: target['filter/get_range']?.to?.replace(/\//g, '-') || null,
+        date_start: rangeIsObject ? target['filter/get_range'].from : target['filter/get_range'],
+        date_end: rangeIsObject ? target['filter/get_range'].to : target['filter/get_range'],
         search_region: target['filter/get_region'],
         search_q: target['filter/get_search'],
         offset: (target['filter/get_pageNum'] - 1) * target['filter/get_limit'],

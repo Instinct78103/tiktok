@@ -2,6 +2,10 @@ export async function range({commit}, val) {
   commit('set_range', val);
 }
 
+export async function days({commit}, val) {
+  commit('set_days', val);
+}
+
 export async function search({commit}, val) {
   commit('set_search', val);
 }

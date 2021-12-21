@@ -5,7 +5,13 @@
         <div class="date_picker">
           <q-btn icon="event" round color="primary">
             <q-popup-proxy cover transition-show="scale" transition-hide="scale">
-              <q-date @before-update="updateProxy" v-model="proxyDate" range>
+              <q-date
+                @before-update="save"
+                v-model="proxyDate"
+                range
+                mask="YYYY-MM-DD"
+                :options="availableDays"
+              >
                 <div class="row items-center justify-end q-gutter-sm">
                   <q-btn label="Cancel" color="primary" flat v-close-popup/>
                   <q-btn label="OK" color="primary" flat @click="save" v-close-popup/>
@@ -45,9 +51,10 @@
 
         <div class="prepared_range">
           <q-btn-toggle
-            v-model="date_item"
+            v-model="prepared_range"
             toggle-color="primary"
             :options="options"
+            size="0.9em"
           />
         </div>
         <div class="sort_by">
@@ -97,21 +104,19 @@ export default {
       options: [
         {
           label: '7 days',
-          value: JSON.stringify({
-            from: this.days_7, to: this.today,
-          }),
+          value: 7,
         },
         {
           label: '14 days',
-          value: JSON.stringify({
-            from: this.days_14, to: this.today,
-          }),
+          value: 14,
         },
         {
           label: '30 days',
-          value: JSON.stringify({
-            from: this.days_30, to: this.today,
-          }),
+          value: 30,
+        },
+        {
+          label: 'All',
+          value: 0,
         },
       ],
     };
@@ -144,15 +149,24 @@ export default {
         query: Object.assign({}, this.$route.query, {sort_by: newVal.alias}),
       });
     },
-    'chosen': function (newVal) {
+    'range': function (newVal, prevVal) {
+      console.log('range')
       this.$store.dispatch('filter/range', newVal);
-      this.$router.push({
-        query: Object.assign({}, this.$route.query, {range: JSON.stringify(newVal)}),
-      });
+      if (prevVal === null && this.prepared_range && newVal) {
+        this.prepared_range = null;
+      }
     },
-    'date_item': function (newVal) { //all the data is directed to `chosen` and mutated there (see above)
-      this.chosen = JSON.parse(newVal);
-      this.proxyDate = JSON.parse(newVal);
+    'prepared_range': function (newVal, prevVal) {
+      this.$store.dispatch('filter/days', newVal);
+      console.log('prepared')
+      // if (newVal === 0) {
+      //   this.range = null;
+      //   this.proxyDate = null;
+      // }
+      if (prevVal === null && this.range && newVal) {
+        this.range = null;
+        this.proxyDate = null
+      }
     },
     'country': function (newVal) {
       this.$store.dispatch('filter/region', newVal.value);
@@ -164,7 +178,7 @@ export default {
 
   props: {
     countries: Array,
-    date_item: Object,
+    date_item: Number,
     sort_by_item: Object,
     search_text: String,
     sort_by: Array,
@@ -175,36 +189,28 @@ export default {
 
   setup(props) {
     const store = useStore();
-    const country = ref(props.countries.find(item => item.value.toLowerCase() === store.getters['filter/get_region'].toLowerCase()));
+    const country = ref(props.countries
+      .find(item => item.value.toLowerCase() === store.getters['filter/get_region'].toLowerCase()));
 
-    const d = new Date();
-    const today = new Date().toJSON().slice(0, 10).replace(/-/g, '/');
+    const prepared_range = ref(props.date_item);
+
+    const today = new Date().toJSON().slice(0, 10);
 
     const proxyDate = ref(today);
-    const chosen = ref(store.getters['filter/get_range']);
-
-    const days_30 = new Date(Date.now() - 29 * 24 * 60 * 60 * 1000)
-      .toJSON().slice(0, 10).replace(/-/g, '/');
-    const days_14 = new Date(Date.now() - 13 * 24 * 60 * 60 * 1000)
-      .toJSON().slice(0, 10).replace(/-/g, '/');
-    const days_7 = new Date(Date.now() - 6 * 24 * 60 * 60 * 1000)
-      .toJSON().slice(0, 10).replace(/-/g, '/');
+    const range = ref(store.getters['filter/get_range']);
 
     return {
       country,
-      chosen,
+      range,
       proxyDate,
-      today,
-      days_30,
-      days_14,
-      days_7,
-
-      updateProxy() {
-        chosen.value = proxyDate.value;
-      },
+      prepared_range,
 
       save() {
-        chosen.value = proxyDate.value;
+        range.value = proxyDate.value;
+      },
+
+      availableDays(date) {
+        return date <= today.replace(/-/g, '/');
       },
     };
   },

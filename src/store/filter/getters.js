@@ -2,6 +2,10 @@ export function get_range(state) {
   return state.model_range;
 }
 
+export function get_days(state) {
+  return state.days;
+}
+
 export function get_search(state) {
   return state.model_search;
 }

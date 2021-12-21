@@ -2,6 +2,10 @@ export function set_range(state, payload) {
   state.model_range = payload;
 }
 
+export function set_days(state, payload) {
+  state.days = payload;
+}
+
 export function set_search(state, payload) {
   state.model_search = payload;
 }
