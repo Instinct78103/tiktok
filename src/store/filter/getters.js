@@ -22,6 +22,14 @@ export function get_region(state) {
   return state.model_region;
 }
 
+export function get_dateStart(state) {
+  return state.date_start
+}
+
+export function get_dateEnd(state) {
+  return state.date_end
+}
+
 export function get_orderDirection(state) {
   return state.order_direction;
 }

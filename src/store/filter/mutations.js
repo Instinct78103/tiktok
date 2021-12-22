@@ -22,6 +22,14 @@ export function set_region(state, payload) {
   state.model_region = payload;
 }
 
+export function set_dateStart(state, payload) {
+  state.date_start = payload;
+}
+
+export function set_dateEnd(state, payload) {
+  state.date_end = payload;
+}
+
 export function set_orderDirection(state, payload) {
   state.order_direction = payload;
 }

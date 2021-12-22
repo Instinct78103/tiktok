@@ -55,6 +55,7 @@
             toggle-color="primary"
             :options="options"
             size="0.9em"
+            @click="dropCustomRange"
           />
         </div>
         <div class="sort_by">
@@ -123,6 +124,13 @@ export default {
   },
 
   methods: {
+    dropCustomRange() {
+      this.proxyDate = null;
+      this.range = null;
+      this.$store.dispatch('filter/days', this.prepared_range);
+      this.$store.dispatch('filter/dateStart', null);
+      this.$store.dispatch('filter/dateEnd', null);
+    },
     searchInit() {
       this.$store.dispatch('filter/search', this.search_text);
       this.$router.push({
@@ -148,25 +156,6 @@ export default {
       this.$router.push({
         query: Object.assign({}, this.$route.query, {sort_by: newVal.alias}),
       });
-    },
-    'range': function (newVal, prevVal) {
-      console.log('range')
-      this.$store.dispatch('filter/range', newVal);
-      if (prevVal === null && this.prepared_range && newVal) {
-        this.prepared_range = null;
-      }
-    },
-    'prepared_range': function (newVal, prevVal) {
-      this.$store.dispatch('filter/days', newVal);
-      console.log('prepared')
-      // if (newVal === 0) {
-      //   this.range = null;
-      //   this.proxyDate = null;
-      // }
-      if (prevVal === null && this.range && newVal) {
-        this.range = null;
-        this.proxyDate = null
-      }
     },
     'country': function (newVal) {
       this.$store.dispatch('filter/region', newVal.value);
@@ -197,7 +186,7 @@ export default {
     const today = new Date().toJSON().slice(0, 10);
 
     const proxyDate = ref(today);
-    const range = ref(store.getters['filter/get_range']);
+    const range = ref(null);
 
     return {
       country,
@@ -207,6 +196,17 @@ export default {
 
       save() {
         range.value = proxyDate.value;
+        prepared_range.value = null;
+
+        if (range.value && typeof range.value === 'object') {
+          store.dispatch('filter/dateStart', range.value.from);
+          store.dispatch('filter/dateEnd', range.value.to);
+        } else if (range.value && typeof range.value === 'string') {
+          store.dispatch('filter/dateStart', range.value);
+          store.dispatch('filter/dateEnd', range.value);
+        }
+
+        store.dispatch('filter/days', null);
       },
 
       availableDays(date) {

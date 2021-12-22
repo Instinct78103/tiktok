@@ -22,6 +22,14 @@ export async function region({commit}, val) {
   commit('set_region', val);
 }
 
+export async function dateStart({commit}, val) {
+  commit('set_dateStart', val);
+}
+
+export async function dateEnd({commit}, val) {
+  commit('set_dateEnd', val);
+}
+
 export async function orderDirection({commit}, val) {
   commit('set_orderDirection', val);
 }

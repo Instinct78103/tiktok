@@ -7,6 +7,8 @@ export default function () {
     model_showPrivate: true,
     model_region: '',
 
+    date_start: null,
+    date_end: null,
     order_direction: 'desc',
     limit: 10,
     offset: 10,

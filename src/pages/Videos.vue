@@ -17,18 +17,17 @@
       v-else-if="isMobile && !loading"
       :date_item="date_item"
       :search_text="search_text"
-      :show_private="show_private"
+      :show_private="showPrivate"
       :sort_by="sort_by"
       :sort_by_item="sort_by_item"
       :sort_direction="sort_direction"
     />
-
     <posts-filter-desktop
       v-else-if="!isMobile && !loading"
       :countries="regionsList"
       :date_item="date_item"
       :search_text="search_text"
-      :show_private="show_private"
+      :show_private="showPrivate"
       :sort_by="sort_by"
       :sort_by_item="sort_by_item"
       :sort_direction="sort_direction"
@@ -73,7 +72,7 @@
 </template>
 
 <script>
-import {ref} from 'vue';
+import {ref, watch} from 'vue';
 import {useQuery, useResult} from '@vue/apollo-composable';
 
 import PostsFilterMobile from 'components/PostsFilterMobile';
@@ -122,37 +121,36 @@ export default {
       : null;
     store.dispatch('filter/days', date_item);
 
-
     /**
-     * sort_by
+     * order
      */
-    const item_by_alias = params.hasOwnProperty('sort_by')
-      ? sort_by.find(item => item.alias.toLowerCase() === params.sort_by.toLowerCase())
-      : sort_by.find(item => item.alias.toLowerCase() === 'date');
+    const item_by_alias = params.hasOwnProperty('order')
+      ? sort_by.find(item => item.value.toLowerCase() === params.order.toLowerCase())
+      : sort_by.find(item => item.value.toLowerCase() === 'createTime');
     sort_by_item.value = item_by_alias;
     store.dispatch('filter/sortBy', item_by_alias.value);
 
     /**
-     * region
+     * search_region
      */
-    store.dispatch('filter/region', params.hasOwnProperty('region') ? params.region : '');
+    store.dispatch('filter/region', params.hasOwnProperty('search_region') ? params.search_region : '');
 
     /**
-     * sortDirection
+     * order_direction
      */
-    store.dispatch('filter/orderDirection', params.hasOwnProperty('sortDirection') ? params.sortDirection : 'desc');
+    store.dispatch('filter/orderDirection', params.hasOwnProperty('order_direction') ? params.order_direction : 'desc');
 
     /**
-     * search
+     * search_q
      */
-    const search_text = ref(params.hasOwnProperty('search') ? params.search : '');
+    const search_text = ref(params.hasOwnProperty('search_q') ? params.search_q : '');
     store.dispatch('filter/search', search_text);
 
     /**
-     * show_private
+     * showPrivate
      */
-    const show_private = params.show_private !== 'false';
-    store.dispatch('filter/showPrivate', show_private);
+    const showPrivate = params.showPrivate !== 'false';
+    store.dispatch('filter/showPrivate', showPrivate);
 
 
     //Second, we parse the filter object from vuex (later it'll be 'variables' in apollo graphql )
@@ -163,8 +161,8 @@ export default {
       order: target['filter/get_sortBy'],
       order_direction: target['filter/get_orderDirection'],
       pageNum: target['filter/get_pageNum'],
-      date_start: target['filter/get_range']?.from?.replace(/\//g, '-') || null,
-      date_end: target['filter/get_range']?.to?.replace(/\//g, '-') || null,
+      date_start: target['filter/get_dateStart'],
+      date_end: target['filter/get_dateEnd'],
       search_region: target['filter/get_region'],
       search_q: target['filter/get_search'],
       offset: (target['filter/get_pageNum'] - 1) * target['filter/get_limit'],
@@ -188,7 +186,7 @@ export default {
       track: ref(''),
       sort_by,
       sort_by_item,
-      show_private,
+      showPrivate,
       date_item,
       pageNum: ref(1),
       search_text,
@@ -209,48 +207,36 @@ export default {
       }
     },
 
-    '$store.state.filter.model_range': function (newVal, prevVal) {
+    '$store.state.filter.date_start': function (val) {
       this.$store.dispatch('filter/pageNum', 1);
       this.refetch(this.getFilterObject);
-
-      if (newVal !== null) {
-        this.$router.push({
-          query: Object.assign({}, this.$route.query, {
-            date_start: this.getFilterObject.date_start,
-            date_end: this.getFilterObject.date_end,
-          }),
-        });
-
-        const query = Object.assign({}, this.$route.query);
-        delete query.days;
-        this.$router.replace({ query });
-
-      }
     },
+
+    '$store.state.filter.date_end': function (val) {
+      this.$store.dispatch('filter/pageNum', 1);
+      this.refetch(this.getFilterObject);
+    },
+
     '$store.state.filter.days': function (val) {
       this.$store.dispatch('filter/pageNum', 1);
       this.refetch(this.getFilterObject);
-
-      if (val !== null) {
-        this.$router.push({
-          query: Object.assign({}, this.$route.query, {days: this.getFilterObject.days}),
-        });
-      }
-
     },
 
     '$store.state.filter.model_sortBy': function (val) {
       this.$store.dispatch('filter/pageNum', 1);
       this.refetch(this.getFilterObject);
     },
+
     '$store.state.filter.order_direction': function (val) {
       this.$store.dispatch('filter/pageNum', 1);
       this.refetch(this.getFilterObject);
     },
+
     '$store.state.filter.model_region': function (val) {
       this.$store.dispatch('filter/pageNum', 1);
       this.refetch(this.getFilterObject);
     },
+
     '$store.state.filter.pageNum': function (newVal, oldVal) {
       if (newVal > oldVal) {
         this.fetchMore({
@@ -269,13 +255,28 @@ export default {
         });
       }
     },
+
     '$store.state.filter.model_search': function (newVal) {
       this.$store.dispatch('filter/pageNum', 1);
       this.refetch(this.getFilterObject);
     },
+
     '$store.state.filter.model_showPrivate': function (newVal) {
       this.$store.dispatch('filter/pageNum', 1);
       this.refetch(this.getFilterObject);
+    },
+
+    'getFilterObject': function (val) {
+      const query = Object.assign({}, this.getFilterObject);
+      const sanitized = Object.entries(query).reduce((a, [k, v]) => (v ? (a[k] = v, a) : a), {});
+
+      delete sanitized.limit;
+      delete sanitized.offset;
+      // delete sanitized.pageNum;
+
+      this.$router.push({
+        query: sanitized, params: {savePosition: true},
+      });
     },
   },
   methods: {
@@ -313,8 +314,8 @@ export default {
         order_direction: target['filter/get_orderDirection'],
         pageNum: target['filter/get_pageNum'],
         // range: target['filter/get_range'],
-        date_start: rangeIsObject ? target['filter/get_range'].from : target['filter/get_range'],
-        date_end: rangeIsObject ? target['filter/get_range'].to : target['filter/get_range'],
+        date_start: target['filter/get_dateStart'],
+        date_end: target['filter/get_dateEnd'],
         search_region: target['filter/get_region'],
         search_q: target['filter/get_search'],
         offset: (target['filter/get_pageNum'] - 1) * target['filter/get_limit'],
