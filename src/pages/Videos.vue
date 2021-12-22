@@ -126,7 +126,8 @@ export default {
      */
     const item_by_alias = params.hasOwnProperty('order')
       ? sort_by.find(item => item.value.toLowerCase() === params.order.toLowerCase())
-      : sort_by.find(item => item.value.toLowerCase() === 'createTime');
+      : sort_by.find(item => item.value.toLowerCase() === 'createtime');
+    console.log(item_by_alias)
     sort_by_item.value = item_by_alias;
     store.dispatch('filter/sortBy', item_by_alias.value);
 
